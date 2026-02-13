@@ -1,12 +1,6 @@
----
-import DashboardLayout from '../../layouts/DashboardLayout.astro';
-import { ContentPanel } from '../../components/react/panels/ContentPanel';
+'use client';
 
-// TODO: Replace with Sanity data fetching
-// import { sanityClient } from '../../lib/sanity/client';
-// import { allProjects, allCategories } from '../../lib/sanity/queries';
-// const projects = await sanityClient.fetch(allProjects);
-// const categories = await sanityClient.fetch(allCategories);
+import { ContentPanel } from '@/components/react/panels/ContentPanel';
 
 const projects = [
   {
@@ -56,19 +50,23 @@ const projects = [
 ];
 
 const categories = ['Branding', 'Product Design', 'Digital', 'Motion', 'Development'];
----
 
-<DashboardLayout
-  title="Work — Warehaus"
-  pageTitle="Work"
-  breadcrumbs={[{ label: 'Dashboard', href: '/' }, { label: 'Work' }]}
->
-  <section>
-    <div class="mb-8">
-      <h1 class="font-display text-3xl font-bold">Our Work</h1>
-      <p class="mt-2 text-muted">Selected projects across design, technology, and storytelling.</p>
-    </div>
+export function WorkContent() {
+  return (
+    <section
+      className="p-6 py-20 transition-all duration-300 ease-in-out"
+      data-section="work"
+      style={{
+        paddingLeft: 'calc(var(--left-sidebar-w, 0px) + 2.5rem)',
+        paddingRight: 'calc(var(--right-sidebar-w, 0px) + 2.5rem)',
+      }}
+    >
+      <div className="mb-8">
+        <h1 className="font-display text-3xl font-bold">Our Work</h1>
+        <p className="mt-2 text-muted">Selected projects across design, technology, and storytelling.</p>
+      </div>
 
-    <ContentPanel client:visible items={projects} categories={categories} />
-  </section>
-</DashboardLayout>
+      <ContentPanel items={projects} categories={categories} />
+    </section>
+  );
+}

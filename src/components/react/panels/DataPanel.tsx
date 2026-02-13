@@ -1,3 +1,5 @@
+'use client';
+
 import { AnimatedCounter } from '@/components/react/ui/AnimatedCounter';
 import { StatusIndicator } from '@/components/react/ui/StatusIndicator';
 import { BasePanel } from './BasePanel';

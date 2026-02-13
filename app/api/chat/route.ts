@@ -1,6 +1,4 @@
-export const prerender = false;
-
-import type { APIRoute } from 'astro';
+import { NextRequest, NextResponse } from 'next/server';
 import type { ChatMessage } from '@/lib/chat/types';
 import { getChatResponse } from '@/lib/chat/ai-client';
 
@@ -20,13 +18,13 @@ function isRateLimited(ip: string): boolean {
   return entry.count > 10;
 }
 
-export const POST: APIRoute = async ({ request, clientAddress }) => {
+export async function POST(request: NextRequest) {
   try {
-    const ip = clientAddress || 'unknown';
+    const ip = request.headers.get('x-forwarded-for') ?? 'unknown';
     if (isRateLimited(ip)) {
-      return new Response(
-        JSON.stringify({ error: 'Too many requests. Please wait a moment.' }),
-        { status: 429, headers: { 'Content-Type': 'application/json' } }
+      return NextResponse.json(
+        { error: 'Too many requests. Please wait a moment.' },
+        { status: 429 }
       );
     }
 
@@ -37,23 +35,20 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     };
 
     if (!message || typeof message !== 'string') {
-      return new Response(
-        JSON.stringify({ error: 'A non-empty "message" string is required.' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      return NextResponse.json(
+        { error: 'A non-empty "message" string is required.' },
+        { status: 400 }
       );
     }
 
     const reply = await getChatResponse(history || [], message);
 
-    return new Response(JSON.stringify({ reply }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return NextResponse.json({ reply });
   } catch (err) {
     console.error('Chat API error:', err);
-    return new Response(
-      JSON.stringify({ error: 'Failed to process chat request.' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    return NextResponse.json(
+      { error: 'Failed to process chat request.' },
+      { status: 500 }
     );
   }
-};
+}

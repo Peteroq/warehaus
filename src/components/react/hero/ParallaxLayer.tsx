@@ -1,3 +1,5 @@
+'use client';
+
 import { useRef } from 'react';
 import { useParallax } from '../animations/useParallax';
 import type { RefObject } from 'react';

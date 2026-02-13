@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useCallback, type KeyboardEvent, type ChangeEvent } from 'react';
 import { cn } from '@/lib/utils/cn';
 

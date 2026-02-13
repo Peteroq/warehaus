@@ -1,3 +1,5 @@
+'use client';
+
 import { SkeletonPanel } from '../ui/SkeletonPanel';
 
 interface SceneLoaderProps {

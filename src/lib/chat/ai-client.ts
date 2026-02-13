@@ -9,7 +9,7 @@ export async function getChatResponse(
   messages: ChatMessage[],
   userMessage: string
 ): Promise<string> {
-  const apiKey = import.meta.env.ANTHROPIC_API_KEY;
+  const apiKey = process.env.ANTHROPIC_API_KEY;
 
   if (!apiKey) {
     return "I'm currently in demo mode. Connect an Anthropic API key to enable full AI responses. In the meantime, feel free to explore the studio's work!";

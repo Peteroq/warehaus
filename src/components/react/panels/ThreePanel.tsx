@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { SceneLoader } from '../three/SceneLoader';
 

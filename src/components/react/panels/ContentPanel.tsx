@@ -1,4 +1,7 @@
+'use client';
+
 import { useMemo, useState } from 'react';
+import Link from 'next/link';
 import { cn } from '@/lib/utils/cn';
 import { GlassCard } from '@/components/react/ui/GlassCard';
 import { FilterBar } from '@/components/react/ui/FilterBar';
@@ -65,7 +68,7 @@ export function ContentPanel({ items, categories }: ContentPanelProps) {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {filteredItems.map((item) => (
-          <a
+          <Link
             key={item.id}
             href={item.href}
             className="group block transition-transform duration-200 hover:-translate-y-0.5"
@@ -99,7 +102,7 @@ export function ContentPanel({ items, categories }: ContentPanelProps) {
                 )}
               </div>
             </GlassCard>
-          </a>
+          </Link>
         ))}
       </div>
 

@@ -1,3 +1,5 @@
+'use client';
+
 import { Suspense, lazy, useEffect, useState } from 'react';
 import { SceneLoader } from './SceneLoader';
 
