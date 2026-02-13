@@ -1,0 +1,74 @@
+---
+import DashboardLayout from '../../layouts/DashboardLayout.astro';
+import { ContentPanel } from '../../components/react/panels/ContentPanel';
+
+// TODO: Replace with Sanity data fetching
+// import { sanityClient } from '../../lib/sanity/client';
+// import { allProjects, allCategories } from '../../lib/sanity/queries';
+// const projects = await sanityClient.fetch(allProjects);
+// const categories = await sanityClient.fetch(allCategories);
+
+const projects = [
+  {
+    id: '1',
+    title: 'Nexus Brand Identity',
+    category: 'Branding',
+    href: '/work/nexus-brand-identity',
+    description: 'Complete visual identity for a tech startup disrupting the logistics space.',
+    image: '/images/hero/bg-1.png',
+  },
+  {
+    id: '2',
+    title: 'Orbital Dashboard',
+    category: 'Product Design',
+    href: '/work/orbital-dashboard',
+    description: 'Real-time analytics platform for satellite operations and space telemetry.',
+    image: '/images/hero/bg-2.png',
+  },
+  {
+    id: '3',
+    title: 'Synthwave Campaign',
+    category: 'Digital',
+    href: '/work/synthwave-campaign',
+    description: 'Multi-channel marketing campaign blending retro-futurism with modern tech.',
+  },
+  {
+    id: '4',
+    title: 'Aurora Mobile App',
+    category: 'Product Design',
+    href: '/work/aurora-mobile',
+    description: 'Weather prediction app featuring cinematic data visualizations.',
+  },
+  {
+    id: '5',
+    title: 'Helix Motion System',
+    category: 'Motion',
+    href: '/work/helix-motion',
+    description: 'Comprehensive motion design language for a biotech company.',
+  },
+  {
+    id: '6',
+    title: 'Chrono Web Platform',
+    category: 'Development',
+    href: '/work/chrono-web',
+    description: 'Full-stack web platform for time-tracking and project management.',
+  },
+];
+
+const categories = ['Branding', 'Product Design', 'Digital', 'Motion', 'Development'];
+---
+
+<DashboardLayout
+  title="Work — Warehaus"
+  pageTitle="Work"
+  breadcrumbs={[{ label: 'Dashboard', href: '/' }, { label: 'Work' }]}
+>
+  <section>
+    <div class="mb-8">
+      <h1 class="font-display text-3xl font-bold">Our Work</h1>
+      <p class="mt-2 text-muted">Selected projects across design, technology, and storytelling.</p>
+    </div>
+
+    <ContentPanel client:visible items={projects} categories={categories} />
+  </section>
+</DashboardLayout>

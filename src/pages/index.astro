@@ -1,0 +1,72 @@
+---
+import DashboardLayout from '../layouts/DashboardLayout.astro';
+import { HeroSection } from '../components/react/hero/HeroSection';
+import { ChatPanel } from '../components/react/chat/ChatPanel';
+import { DataPanel } from '../components/react/panels/DataPanel';
+import { ContentPanel } from '../components/react/panels/ContentPanel';
+
+// TODO: Replace with Sanity data fetching
+// import { sanityClient } from '../lib/sanity/client';
+// import { featuredProjects, siteSettings } from '../lib/sanity/queries';
+// const settings = await sanityClient.fetch(siteSettings);
+// const featured = await sanityClient.fetch(featuredProjects);
+
+// Mock data for development
+const featuredItems = [
+  {
+    id: '1',
+    title: 'Nexus Brand Identity',
+    category: 'Branding',
+    href: '/work/nexus-brand-identity',
+    description: 'Complete visual identity for a tech startup',
+    image: '/images/hero/bg-1.png',
+  },
+  {
+    id: '2',
+    title: 'Orbital Dashboard',
+    category: 'Product Design',
+    href: '/work/orbital-dashboard',
+    description: 'Real-time analytics platform for space operations',
+    image: '/images/hero/bg-2.png',
+  },
+  {
+    id: '3',
+    title: 'Synthwave Campaign',
+    category: 'Digital',
+    href: '/work/synthwave-campaign',
+    description: 'Multi-channel marketing campaign with retro-futurism',
+  },
+  {
+    id: '4',
+    title: 'Aurora Mobile App',
+    category: 'Product Design',
+    href: '/work/aurora-mobile',
+    description: 'Weather prediction app with cinematic visualizations',
+  },
+];
+---
+
+<DashboardLayout title="Warehaus — Dream. Design. Develop." fullBleed>
+  <!-- Hero Section (client:load — above the fold, first impression) -->
+  <HeroSection client:load />
+
+  <!-- Dashboard panels below hero -->
+  <div class="px-6 py-12">
+    <!-- Stats grid -->
+    <div class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <DataPanel client:load label="Projects Delivered" value={147} suffix="+" trend="up" />
+      <DataPanel client:load label="Active Clients" value={23} trend="up" />
+      <DataPanel client:load label="Team Members" value={12} trend="neutral" />
+      <DataPanel client:load label="Studio Status" value={99} suffix="%" status="online" />
+    </div>
+
+    <!-- Featured work -->
+    <section>
+      <h2 class="mb-6 font-display text-2xl font-semibold">Featured Work</h2>
+      <ContentPanel client:visible items={featuredItems} />
+    </section>
+  </div>
+
+  <!-- Chat Panel (client:load — must be ready for interaction) -->
+  <ChatPanel client:load />
+</DashboardLayout>
