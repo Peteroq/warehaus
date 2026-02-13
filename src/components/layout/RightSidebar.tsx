@@ -215,7 +215,7 @@ export function RightSidebar() {
                 )}
 
                 <textarea
-                  className="w-full text-xs p-2.5 rounded-lg resize-none border border-gray-200 focus:ring-1 focus:ring-gray-300 outline-none h-16 bg-white text-black placeholder-gray-400"
+                  className="w-full text-xs p-2.5 rounded-lg resize-none border-0 focus:ring-1 focus:ring-gray-300 outline-none h-16 bg-white text-black placeholder-gray-400"
                   placeholder="Share your thoughts..."
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}

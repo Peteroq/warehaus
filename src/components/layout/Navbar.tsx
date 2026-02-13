@@ -14,9 +14,31 @@ import {
 import { useLayout, EXPANDED, COLLAPSED } from '@/components/providers/LayoutProvider';
 
 const NAV_LINKS = [
-  { icon: BriefcaseIcon, label: 'WORK', href: '/work' },
-  { icon: UsersIcon, label: 'ABOUT', href: '/about' },
-  { icon: MailIcon, label: 'CONTACT', href: '/contact' },
+  {
+    icon: HomeIcon,
+    label: 'HOME',
+    href: '/',
+    description:
+      'Welcome to the world of warehaus, a virtual space for building amazing digital products.',
+  },
+  {
+    icon: BriefcaseIcon,
+    label: 'WORK',
+    href: '/work',
+    description: 'Explore our portfolio of digital products and creative projects.',
+  },
+  {
+    icon: UsersIcon,
+    label: 'ABOUT',
+    href: '/about',
+    description: 'Meet the team behind warehaus and learn our story.',
+  },
+  {
+    icon: MailIcon,
+    label: 'CONTACT',
+    href: '/contact',
+    description: 'Get in touch. We’d love to hear about your next project.',
+  },
 ];
 
 function isActiveRoute(href: string, pathname: string) {
@@ -88,72 +110,64 @@ export function Navbar() {
           </div>
 
           {/* Nav Links */}
-          <div className={`flex-1 flex flex-col ${leftCollapsed ? 'items-center' : ''}`}>
-            {/* Home */}
-            {leftCollapsed ? (
-              <div className="mb-6">
-                <Link
-                  href="/"
-                  className={`flex items-center justify-center ${
-                    isActiveRoute('/', pathname) ? 'text-white' : ''
-                  }`}
-                  title="HOME"
-                >
-                  <HomeIcon className="w-5 h-5" />
-                </Link>
-              </div>
-            ) : (
-              <div className="mb-6">
-                <Link
-                  href="/"
-                  className={`flex items-center gap-3 font-bold text-sm mb-4 ${
-                    isActiveRoute('/', pathname) ? 'text-white' : ''
-                  }`}
-                >
-                  <HomeIcon className="w-4 h-4" />
-                  <span>HOME</span>
-                </Link>
-
-                {/* Decorative Card */}
-                <div className="w-full h-32 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-orange-400 mb-3 relative overflow-hidden group cursor-pointer">
-                  <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center">
-                      <div className="w-8 h-8 rounded-full bg-white/40" />
-                    </div>
-                  </div>
-                </div>
-
-                <p
-                  className={`text-[10px] leading-tight transition-colors duration-500 ${
-                    isOnLight ? 'text-gray-500' : 'text-gray-300'
-                  }`}
-                >
-                  Welcome to the world of warehaus, a virtual space for building
-                  amazing digital products.
-                </p>
-              </div>
-            )}
-
-            {/* Other nav links */}
-            <div className={`flex flex-col gap-6 ${leftCollapsed ? 'items-center' : ''}`}>
-              {NAV_LINKS.map(({ icon: Icon, label, href }) => {
+          <div className={`flex-1 flex flex-col gap-6 ${leftCollapsed ? 'items-center' : ''}`}>
+              {NAV_LINKS.map(({ icon: Icon, label, href, description }) => {
                 const active = isActiveRoute(href, pathname);
+                const showActiveBlock = active && !leftCollapsed;
+
+                if (showActiveBlock) {
+                  return (
+                    <div key={label} className="mb-6">
+                      <Link
+                        href={href}
+                        title={label}
+                        className={`flex items-center gap-3 font-bold text-sm mb-4 ${
+                          active ? (isOnLight ? 'text-gray-900' : 'text-white') : ''
+                        }`}
+                      >
+                        <Icon className="w-4 h-4 flex-shrink-0" />
+                        <span>{label}</span>
+                      </Link>
+
+                      {/* Decorative Card - same as HOME active state */}
+                      <Link
+                        href={href}
+                        className="block w-full h-32 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-orange-400 mb-3 relative overflow-hidden group cursor-pointer"
+                      >
+                        <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors" />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center">
+                            <div className="w-8 h-8 rounded-full bg-white/40" />
+                          </div>
+                        </div>
+                      </Link>
+
+                      <p
+                        className={`text-[10px] leading-tight transition-colors duration-500 ${
+                          isOnLight ? 'text-gray-500' : 'text-gray-300'
+                        }`}
+                      >
+                        {description}
+                      </p>
+                    </div>
+                  );
+                }
+
                 return (
                   <Link
                     key={label}
                     href={href}
                     title={label}
-                    className={`flex items-center text-sm font-bold transition-all duration-500 group ${
+                    className={`flex items-center text-sm font-bold transition-all duration-500 group rounded-xl px-3 py-2.5 border ${
                       leftCollapsed ? 'justify-center' : 'gap-3'
                     } ${
                       active
                         ? isOnLight
-                          ? 'text-gray-900'
-                          : 'text-white'
+                          ? 'text-gray-900 bg-black/5 border-black/15'
+                          : 'text-white bg-white/10 border-white/20'
                         : isOnLight
-                          ? 'text-gray-500 hover:text-gray-900'
-                          : 'text-gray-200 hover:text-white'
+                          ? 'text-gray-500 hover:text-gray-900 border-black/10 hover:border-black/15 hover:bg-black/5'
+                          : 'text-gray-200 hover:text-white border-white/10 hover:border-white/20 hover:bg-white/5'
                     }`}
                   >
                     <Icon
@@ -165,7 +179,6 @@ export function Navbar() {
                   </Link>
                 );
               })}
-            </div>
           </div>
 
           {/* Bottom Section */}
