@@ -13,6 +13,7 @@ export function useGsapTimeline(config?: gsap.TimelineVars) {
       timeline.current?.kill();
       timeline.current = null;
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- config is expected to be stable on mount
   }, []);
 
   return timeline;

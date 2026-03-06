@@ -1,21 +1,25 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { Globe, Menu, Diamond, Grid } from 'lucide-react';
+import Link from 'next/link';
+import { Globe, Menu, Diamond, Grid, ChevronDown } from 'lucide-react';
 
 const TABS = [
   {
     label: 'DREAM',
+    href: '/dream',
     image: '/images/hero/bg-3.png',
     overlay: 'bg-indigo-900/40',
   },
   {
     label: 'DESIGN',
+    href: '/design',
     image: '/images/hero/bg-1.png',
     overlay: 'bg-orange-900/40',
   },
   {
     label: 'DEVELOP',
+    href: '/develop',
     image: '/images/hero/bg-2.png',
     overlay: 'bg-emerald-900/40',
   },
@@ -44,7 +48,7 @@ export function HeroSection() {
       className="relative w-full h-full min-h-[600px] overflow-hidden"
       data-section="hero"
     >
-      {/* Background layers — crossfade */}
+      {/* Background layers */}
       {TABS.map((tab, i) => (
         <div
           key={tab.label}
@@ -79,6 +83,11 @@ export function HeroSection() {
           </div>
         </div>
 
+        {/* Tagline */}
+        <p className="text-white/60 text-sm tracking-wider max-w-md mb-8">
+          What is dreamed, we forge. What is forged, we bring to life.
+        </p>
+
         {/* Tab Typography with progress bars */}
         <div className="flex-1 flex flex-col justify-center">
           {TABS.map((tab, i) => {
@@ -93,8 +102,14 @@ export function HeroSection() {
                 }`}
               >
                 <div className="inline-flex flex-col">
-                  <button
-                    onClick={() => goTo(i)}
+                  <Link
+                    href={tab.href}
+                    onClick={(e) => {
+                      if (!isActive) {
+                        e.preventDefault();
+                        goTo(i);
+                      }
+                    }}
                     className="text-6xl md:text-7xl lg:text-8xl font-black italic tracking-tighter drop-shadow-lg cursor-pointer hover:scale-[1.02] transition-transform duration-300"
                     style={
                       isActive
@@ -103,7 +118,7 @@ export function HeroSection() {
                     }
                   >
                     {tab.label}.
-                  </button>
+                  </Link>
 
                   {/* Progress bar */}
                   <button
@@ -123,6 +138,20 @@ export function HeroSection() {
               </div>
             );
           })}
+        </div>
+
+        {/* Scroll CTA */}
+        <div className="flex justify-center mt-8">
+          <button
+            onClick={() => {
+              const pillars = document.querySelector('[data-section="pillars"]');
+              pillars?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="flex flex-col items-center gap-2 text-white/50 hover:text-white/80 transition-colors"
+          >
+            <span className="text-xs tracking-wider uppercase">Begin the Journey</span>
+            <ChevronDown className="w-5 h-5 animate-bounce" />
+          </button>
         </div>
       </div>
     </div>

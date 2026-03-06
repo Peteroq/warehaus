@@ -1,17 +1,21 @@
 'use client';
 
-import { Suspense, lazy, useEffect, useState } from 'react';
+import { Suspense, lazy, useSyncExternalStore } from 'react';
 import { SceneLoader } from './SceneLoader';
 
 const BackgroundCanvas = lazy(() => import('./BackgroundSceneInner'));
+
+const emptySubscribe = () => () => {};
+function useIsMounted() {
+  return useSyncExternalStore(emptySubscribe, () => true, () => false);
+}
 
 interface BackgroundSceneProps {
   className?: string;
 }
 
 export function BackgroundScene({ className = '' }: BackgroundSceneProps) {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  const mounted = useIsMounted();
 
   if (!mounted) return null;
 

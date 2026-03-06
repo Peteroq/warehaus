@@ -5,6 +5,7 @@ import { LayoutProvider, useLayout, EXPANDED, COLLAPSED } from '@/components/pro
 import { Navbar } from '@/components/layout/Navbar';
 import { RightSidebar } from '@/components/layout/RightSidebar';
 import { MobileBottomBar } from '@/components/layout/MobileBottomBar';
+import { PageTransition } from '@/components/providers/PageTransition';
 
 function AppShellInner({ children }: { children: ReactNode }) {
   const {
@@ -93,7 +94,7 @@ function AppShellInner({ children }: { children: ReactNode }) {
 
       {/* Main content */}
       <main ref={mainRef} className="w-full">
-        {children}
+        <PageTransition>{children}</PageTransition>
       </main>
 
       <MobileBottomBar />

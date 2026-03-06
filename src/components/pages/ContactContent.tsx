@@ -1,121 +1,386 @@
 'use client';
 
-import { GlassCard } from '@/components/react/ui/GlassCard';
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import {
+  Compass,
+  Hammer,
+  TowerControl,
+  Mail,
+  MapPin,
+  ArrowRight,
+  ChevronDown,
+  Send,
+  MessageCircle,
+} from 'lucide-react';
+import { useLayout } from '@/components/providers/LayoutProvider';
 import { StatusIndicator } from '@/components/react/ui/StatusIndicator';
 
-export function ContactContent() {
-  return (
-    <div
-      className="mx-auto max-w-4xl p-6 py-20 transition-all duration-300 ease-in-out"
-      style={{
-        paddingLeft: 'calc(var(--left-sidebar-w, 0px) + 2.5rem)',
-        paddingRight: 'calc(var(--right-sidebar-w, 0px) + 2.5rem)',
-      }}
-    >
-      <section className="mb-12">
-        <h1 className="font-display text-4xl font-bold md:text-5xl">Get in Touch</h1>
-        <p className="mt-4 max-w-2xl text-lg leading-relaxed text-muted">
-          Have a project in mind? We&apos;d love to hear about it.
-          Drop us a message and we&apos;ll get back to you within 24 hours.
-        </p>
-      </section>
+/* ───────── Fade-in on scroll ───────── */
+function useFadeIn() {
+  const [el, setEl] = useState<HTMLElement | null>(null);
+  const [visible, setVisible] = useState(false);
 
-      <div className="grid gap-8 lg:grid-cols-5">
-        {/* Contact Form */}
-        <div className="lg:col-span-3">
-          <div className="glass p-6">
-            <h2 className="mb-6 font-display text-lg font-semibold">Send a Message</h2>
-            <form className="space-y-5" action="#" method="POST">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div>
-                  <label htmlFor="name" className="mb-1.5 block text-xs font-medium text-muted">Name</label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    required
-                    className="w-full rounded-lg border border-border bg-surface-elevated px-4 py-2.5 text-sm text-foreground placeholder-muted/50 outline-none transition-colors focus:border-accent"
-                    placeholder="Your name"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="email" className="mb-1.5 block text-xs font-medium text-muted">Email</label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    required
-                    className="w-full rounded-lg border border-border bg-surface-elevated px-4 py-2.5 text-sm text-foreground placeholder-muted/50 outline-none transition-colors focus:border-accent"
-                    placeholder="you@company.com"
-                  />
-                </div>
-              </div>
-              <div>
-                <label htmlFor="subject" className="mb-1.5 block text-xs font-medium text-muted">Subject</label>
-                <input
-                  type="text"
-                  id="subject"
-                  name="subject"
-                  className="w-full rounded-lg border border-border bg-surface-elevated px-4 py-2.5 text-sm text-foreground placeholder-muted/50 outline-none transition-colors focus:border-accent"
-                  placeholder="Project inquiry"
-                />
-              </div>
-              <div>
-                <label htmlFor="message" className="mb-1.5 block text-xs font-medium text-muted">Message</label>
-                <textarea
-                  id="message"
-                  name="message"
-                  rows={5}
-                  required
-                  className="w-full resize-none rounded-lg border border-border bg-surface-elevated px-4 py-2.5 text-sm text-foreground placeholder-muted/50 outline-none transition-colors focus:border-accent"
-                  placeholder="Tell us about your project..."
-                ></textarea>
-              </div>
-              <button
-                type="submit"
-                className="rounded-lg bg-accent px-6 py-2.5 text-sm font-medium text-background transition-colors hover:bg-accent/90"
-              >
-                Send Message
-              </button>
-            </form>
+  useEffect(() => {
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setVisible(true); },
+      { threshold: 0.15 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [el]);
+
+  return [setEl, visible] as const;
+}
+
+/* ───────── Data ───────── */
+const inquiryTypes = [
+  {
+    icon: Compass,
+    label: 'Dream',
+    subtitle: 'Strategy & Vision',
+    description: 'Brand strategy, market research, creative direction, product visioning, content strategy.',
+    color: '#6366f1',
+    href: '/dream',
+  },
+  {
+    icon: Hammer,
+    label: 'Design',
+    subtitle: 'Craft & Form',
+    description: 'UI/UX design, brand identity, design systems, prototyping, visual design.',
+    color: '#f97316',
+    href: '/design',
+  },
+  {
+    icon: TowerControl,
+    label: 'Develop',
+    subtitle: 'Engineering & Build',
+    description: 'Web development, mobile apps, e-commerce, AI automation, API integrations.',
+    color: '#eab308',
+    href: '/develop',
+  },
+];
+
+const SIDEBAR_PAD = {
+  paddingLeft: 'calc(var(--left-sidebar-w, 0px) + 1rem)',
+  paddingRight: 'calc(var(--right-sidebar-w, 0px) + 1rem)',
+};
+
+/* ───────── Component ───────── */
+export function ContactContent() {
+  const { setActiveSection } = useLayout();
+  const [pathsRef, pathsVisible] = useFadeIn();
+  const [formRef, formVisible] = useFadeIn();
+  const [infoRef, infoVisible] = useFadeIn();
+
+  useEffect(() => {
+    setActiveSection('contact-hero');
+    return () => setActiveSection('hero');
+  }, [setActiveSection]);
+
+  return (
+    <div className="min-h-screen">
+
+      {/* ════════ 1. HERO ════════ */}
+      <section
+        data-section="contact-hero"
+        className="relative w-full h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden"
+      >
+        {/* Background */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_#0f1a2e_0%,_#050505_60%)]" />
+
+        {/* Subtle grid pattern */}
+        <div
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)',
+            backgroundSize: '60px 60px',
+          }}
+        />
+
+        {/* Content */}
+        <div className="relative z-10 text-center px-6" style={SIDEBAR_PAD}>
+          <div className="max-w-2xl mx-auto">
+            <div className="flex items-center justify-center gap-2 mb-6">
+              <MessageCircle className="w-4 h-4 text-cyan-400/60" />
+              <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-cyan-400/60">
+                Begin Your Journey
+              </span>
+            </div>
+            <h1 className="font-display text-5xl md:text-7xl font-bold text-white mb-6 leading-[1.1]">
+              Step Inside<br />
+              <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+                the House
+              </span>
+            </h1>
+            <p className="text-lg text-gray-400 max-w-lg mx-auto leading-relaxed">
+              The door is open. Tell us what you&apos;re building, and we&apos;ll match you
+              with the right mentor and familiar to bring it to life.
+            </p>
           </div>
         </div>
 
-        {/* Contact Info */}
-        <div className="space-y-4 lg:col-span-2">
-          <GlassCard>
-            <h3 className="font-display text-sm font-semibold text-accent">Email</h3>
-            <a href="mailto:hello@warehaus.studio" className="mt-1 block text-sm text-foreground transition-colors hover:text-accent">
-              hello@warehaus.studio
-            </a>
-          </GlassCard>
-
-          <GlassCard>
-            <h3 className="font-display text-sm font-semibold text-accent">Location</h3>
-            <p className="mt-1 text-sm text-foreground">Remote-first, globally distributed</p>
-          </GlassCard>
-
-          <GlassCard>
-            <div className="flex items-center justify-between">
-              <h3 className="font-display text-sm font-semibold text-accent">Availability</h3>
-              <StatusIndicator status="online" label="Open" size="sm" />
-            </div>
-            <p className="mt-1 text-sm text-foreground/80">
-              Currently accepting new projects for Q2 2026.
-            </p>
-          </GlassCard>
-
-          <GlassCard>
-            <h3 className="font-display text-sm font-semibold text-accent">Social</h3>
-            <div className="mt-2 flex gap-3">
-              <a href="#" className="text-sm text-muted transition-colors hover:text-foreground">Twitter</a>
-              <a href="#" className="text-sm text-muted transition-colors hover:text-foreground">Dribbble</a>
-              <a href="#" className="text-sm text-muted transition-colors hover:text-foreground">GitHub</a>
-              <a href="#" className="text-sm text-muted transition-colors hover:text-foreground">LinkedIn</a>
-            </div>
-          </GlassCard>
+        {/* Scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+          <span className="text-[9px] uppercase tracking-[0.3em] text-cyan-400/40">
+            Choose Your Path
+          </span>
+          <ChevronDown className="w-4 h-4 text-cyan-400/40 animate-bounce" />
         </div>
-      </div>
+      </section>
+
+      {/* ════════ 2. PATHS — Choose your realm ════════ */}
+      <section
+        ref={pathsRef}
+        data-section="contact-paths"
+        className="relative w-full py-24"
+      >
+        <div style={SIDEBAR_PAD} className="w-full">
+          <div className="max-w-5xl mx-auto">
+            <div
+              className={`mb-12 transition-all duration-1000 ${
+                pathsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+              }`}
+            >
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-px bg-cyan-500/40" />
+                <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-cyan-400/60">
+                  Three Realms
+                </span>
+              </div>
+              <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-3">
+                Choose your path.
+              </h2>
+              <p className="text-sm text-gray-400 max-w-lg">
+                Each realm has its own mentor, familiar, and expertise.
+                Not sure where to start? Send us a message below and we&apos;ll guide you.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {inquiryTypes.map((type, i) => {
+                const Icon = type.icon;
+                return (
+                  <Link
+                    key={type.label}
+                    href={type.href}
+                    className={`group relative block rounded-xl border border-white/[0.06] bg-white/[0.02] p-6 overflow-hidden transition-all duration-500 hover:border-white/10 hover:-translate-y-0.5 ${
+                      pathsVisible
+                        ? 'opacity-100 translate-y-0'
+                        : 'opacity-0 translate-y-8'
+                    }`}
+                    style={{
+                      transitionDelay: pathsVisible ? `${200 + i * 100}ms` : '0ms',
+                    }}
+                  >
+                    {/* Hover glow */}
+                    <div
+                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                      style={{
+                        background: `radial-gradient(circle at 50% 0%, ${type.color}10, transparent 70%)`,
+                      }}
+                    />
+
+                    <div className="relative z-10">
+                      <div
+                        className="w-10 h-10 rounded-lg flex items-center justify-center mb-4 border"
+                        style={{
+                          borderColor: `${type.color}30`,
+                          backgroundColor: `${type.color}10`,
+                        }}
+                      >
+                        <Icon className="w-5 h-5" style={{ color: type.color }} />
+                      </div>
+                      <h3 className="font-display text-lg font-bold text-white mb-1">
+                        {type.label}
+                      </h3>
+                      <p
+                        className="text-[10px] font-bold uppercase tracking-[0.2em] mb-3"
+                        style={{ color: type.color }}
+                      >
+                        {type.subtitle}
+                      </p>
+                      <p className="text-xs text-gray-500 leading-relaxed mb-4">
+                        {type.description}
+                      </p>
+                      <div
+                        className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                        style={{ color: type.color }}
+                      >
+                        Explore Realm <ArrowRight className="w-3 h-3" />
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ════════ 3. FORM + INFO ════════ */}
+      <section
+        ref={formRef}
+        data-section="contact-form"
+        className="relative w-full py-24"
+      >
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_#0a1020_0%,_transparent_50%)]" />
+        <div style={SIDEBAR_PAD} className="relative z-10 w-full">
+          <div className="max-w-5xl mx-auto">
+            <div
+              className={`mb-12 transition-all duration-1000 ${
+                formVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+              }`}
+            >
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-px bg-cyan-500/40" />
+                <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-cyan-400/60">
+                  Get In Touch
+                </span>
+              </div>
+              <h2 className="font-display text-3xl md:text-4xl font-bold text-white">
+                Send a message.
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Form — 2 cols */}
+              <div
+                className={`lg:col-span-2 rounded-xl border border-white/[0.06] bg-white/[0.02] p-6 md:p-8 transition-all duration-1000 delay-200 ${
+                  formVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+                }`}
+              >
+                <form className="space-y-5" action="#" method="POST">
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div>
+                      <label htmlFor="name" className="mb-1.5 block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500">
+                        Name
+                      </label>
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        required
+                        className="w-full rounded-lg border border-white/[0.06] bg-white/[0.03] px-4 py-2.5 text-sm text-white placeholder-gray-600 outline-none transition-all focus:border-cyan-500/30 focus:bg-white/[0.05]"
+                        placeholder="Your name"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="email" className="mb-1.5 block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500">
+                        Email
+                      </label>
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        required
+                        className="w-full rounded-lg border border-white/[0.06] bg-white/[0.03] px-4 py-2.5 text-sm text-white placeholder-gray-600 outline-none transition-all focus:border-cyan-500/30 focus:bg-white/[0.05]"
+                        placeholder="you@company.com"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label htmlFor="subject" className="mb-1.5 block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500">
+                      Subject
+                    </label>
+                    <input
+                      type="text"
+                      id="subject"
+                      name="subject"
+                      className="w-full rounded-lg border border-white/[0.06] bg-white/[0.03] px-4 py-2.5 text-sm text-white placeholder-gray-600 outline-none transition-all focus:border-cyan-500/30 focus:bg-white/[0.05]"
+                      placeholder="Project inquiry"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="message" className="mb-1.5 block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500">
+                      Message
+                    </label>
+                    <textarea
+                      id="message"
+                      name="message"
+                      rows={6}
+                      required
+                      className="w-full resize-none rounded-lg border border-white/[0.06] bg-white/[0.03] px-4 py-2.5 text-sm text-white placeholder-gray-600 outline-none transition-all focus:border-cyan-500/30 focus:bg-white/[0.05]"
+                      placeholder="Tell us about your project, your timeline, and what success looks like..."
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="inline-flex items-center gap-2 rounded-full bg-cyan-500/20 border border-cyan-500/30 px-6 py-2.5 text-sm font-bold text-cyan-300 transition-all hover:bg-cyan-500/30"
+                  >
+                    Send Message <Send className="w-3.5 h-3.5" />
+                  </button>
+                </form>
+              </div>
+
+              {/* Info — 1 col */}
+              <div
+                ref={infoRef}
+                className={`space-y-4 transition-all duration-1000 delay-400 ${
+                  infoVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+                }`}
+              >
+                <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-5">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Mail className="w-4 h-4 text-cyan-400/60" />
+                    <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-400/60">
+                      Email
+                    </h3>
+                  </div>
+                  <a
+                    href="mailto:hello@warehaus.studio"
+                    className="text-sm text-white hover:text-cyan-300 transition-colors"
+                  >
+                    hello@warehaus.studio
+                  </a>
+                </div>
+
+                <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-5">
+                  <div className="flex items-center gap-2 mb-2">
+                    <MapPin className="w-4 h-4 text-cyan-400/60" />
+                    <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-400/60">
+                      Location
+                    </h3>
+                  </div>
+                  <p className="text-sm text-white">Remote-first</p>
+                  <p className="text-xs text-gray-500 mt-1">Globally distributed team</p>
+                </div>
+
+                <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-5">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-4 h-4 flex items-center justify-center">
+                      <StatusIndicator status="online" size="sm" />
+                    </div>
+                    <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-400/60">
+                      Availability
+                    </h3>
+                  </div>
+                  <p className="text-sm text-white">Open for new projects</p>
+                  <p className="text-xs text-gray-500 mt-1">Currently accepting work for Q2 2026</p>
+                </div>
+
+                <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-5">
+                  <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-400/60 mb-3">
+                    Social
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {['Twitter', 'Dribbble', 'GitHub', 'LinkedIn'].map((s) => (
+                      <a
+                        key={s}
+                        href="#"
+                        className="text-xs px-3 py-1 rounded-full border border-white/[0.06] text-gray-500 hover:text-white hover:border-white/10 transition-all"
+                      >
+                        {s}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

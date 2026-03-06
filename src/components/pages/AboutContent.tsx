@@ -2,6 +2,7 @@
 
 import { DataPanel } from '@/components/react/panels/DataPanel';
 import { GlassCard } from '@/components/react/ui/GlassCard';
+import { ALL_SERVICES } from '@/lib/data/services';
 
 const teamMembers = [
   { name: 'Alex Chen', role: 'Creative Director', bio: 'Leading vision and strategy across all studio projects.' },
@@ -19,12 +20,18 @@ export function AboutContent() {
         paddingRight: 'calc(var(--right-sidebar-w, 0px) + 2.5rem)',
       }}
     >
-      {/* Studio intro */}
+      {/* Origin Story */}
       <section className="mb-12">
-        <h1 className="font-display text-4xl font-bold md:text-5xl">We are Warehaus</h1>
+        <h1 className="font-display text-4xl font-bold md:text-5xl">The World Bible</h1>
         <p className="mt-4 max-w-2xl text-lg leading-relaxed text-muted">
-          A creative studio at the intersection of design, technology, and storytelling.
-          We build immersive digital experiences that push boundaries and deliver results.
+          Before there was a studio, there was an idea: that the best digital work happens when strategy, design, and engineering
+          share a single vision. Warehaus was founded not as a company, but as a house — a place where different disciplines
+          live under one roof, speak a common language, and build things that matter.
+        </p>
+        <p className="mt-4 max-w-2xl text-base leading-relaxed text-foreground/60">
+          Over time, the house grew. What started as a small collective became a studio with a mythology of its own —
+          mentors who embody our values, familiars who amplify our craft, and a codex of creations that documents
+          every artifact we&apos;ve brought into the world.
         </p>
       </section>
 
@@ -36,44 +43,30 @@ export function AboutContent() {
         <DataPanel label="Countries Served" value={28} trend="up" />
       </section>
 
-      {/* Philosophy */}
+      {/* Mentors */}
       <section className="mb-12">
-        <h2 className="mb-6 font-display text-2xl font-semibold">Our Approach</h2>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <GlassCard>
-            <h3 className="font-display text-sm font-semibold text-accent">Design-Led</h3>
-            <p className="mt-2 text-sm leading-relaxed text-foreground/80">
-              Every project starts with deep understanding of the problem space. We design
-              systems, not just screens.
-            </p>
-          </GlassCard>
-          <GlassCard>
-            <h3 className="font-display text-sm font-semibold text-accent">Tech-Forward</h3>
-            <p className="mt-2 text-sm leading-relaxed text-foreground/80">
-              We leverage cutting-edge technology — from WebGL to AI — to create experiences
-              that feel ahead of their time.
-            </p>
-          </GlassCard>
-          <GlassCard>
-            <h3 className="font-display text-sm font-semibold text-accent">Story-Driven</h3>
-            <p className="mt-2 text-sm leading-relaxed text-foreground/80">
-              Great work tells a story. We weave narrative into every interaction,
-              making the complex feel intuitive.
-            </p>
-          </GlassCard>
-          <GlassCard>
-            <h3 className="font-display text-sm font-semibold text-accent">Performance-First</h3>
-            <p className="mt-2 text-sm leading-relaxed text-foreground/80">
-              Beautiful means nothing if it&apos;s slow. We optimize relentlessly
-              for speed, accessibility, and reliability.
-            </p>
-          </GlassCard>
+        <h2 className="mb-6 font-display text-2xl font-semibold">The Mentors</h2>
+        <div className="grid gap-4 sm:grid-cols-3">
+          {ALL_SERVICES.map((service) => (
+            <GlassCard key={service.mentor}>
+              <h3 className="font-display text-sm font-semibold" style={{ color: service.color }}>
+                {service.mentor}
+              </h3>
+              <p className="text-[10px] uppercase tracking-wider text-muted mb-2">{service.realm}</p>
+              <p className="text-sm leading-relaxed text-foreground/70">
+                {service.loreBlurb.slice(0, 150)}...
+              </p>
+            </GlassCard>
+          ))}
         </div>
       </section>
 
-      {/* Team */}
+      {/* The Real Humans */}
       <section>
-        <h2 className="mb-6 font-display text-2xl font-semibold">The Team</h2>
+        <h2 className="mb-6 font-display text-2xl font-semibold">The Real Humans</h2>
+        <p className="mb-6 text-sm text-muted">
+          Behind the lore, real people do the work. These are the architects, designers, and builders of Warehaus.
+        </p>
         <div className="grid gap-4 sm:grid-cols-2">
           {teamMembers.map((member) => (
             <div key={member.name} className="glass p-5">
