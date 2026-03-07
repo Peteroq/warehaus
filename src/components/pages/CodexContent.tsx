@@ -16,24 +16,7 @@ import {
 import { useLayout } from '@/components/providers/LayoutProvider';
 import { codexEntries } from '@/lib/data/codex';
 import { ALL_SERVICES } from '@/lib/data/services';
-
-/* ───────── Fade-in on scroll hook ───────── */
-function useFadeIn() {
-  const [el, setEl] = useState<HTMLElement | null>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    if (!el) return;
-    const io = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setVisible(true); },
-      { threshold: 0.15 },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, [el]);
-
-  return [setEl, visible] as const;
-}
+import { useFadeIn } from '@/hooks/useFadeIn';
 
 /* ───────── Data ───────── */
 const STATUS_FILTERS = [

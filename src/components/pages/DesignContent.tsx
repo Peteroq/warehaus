@@ -18,24 +18,7 @@ import {
 } from 'lucide-react';
 import { GlassCard } from '@/components/react/ui/GlassCard';
 import { ALL_SERVICES } from '@/lib/data/services';
-
-/* ───────── Fade-in hook ───────── */
-function useFadeIn() {
-  const [el, setEl] = useState<HTMLDivElement | null>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    if (!el) return;
-    const io = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setVisible(true); },
-      { threshold: 0.15 },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, [el]);
-
-  return [setEl, visible] as const;
-}
+import { useFadeIn } from '@/hooks/useFadeIn';
 
 /* ───────── Data ───────── */
 const disciplines = [

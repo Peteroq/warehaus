@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Globe, Menu, Diamond, Grid, ChevronDown } from 'lucide-react';
+import { useLayout } from '@/components/providers/LayoutProvider';
 
 const TABS = [
   {
@@ -30,11 +31,16 @@ const INTERVAL = 5000;
 export function HeroSection() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [resetKey, setResetKey] = useState(0);
+  const { setHeroTabIndex } = useLayout();
 
   const goTo = useCallback((index: number) => {
     setActiveIndex(index);
     setResetKey((k) => k + 1);
   }, []);
+
+  useEffect(() => {
+    setHeroTabIndex(activeIndex);
+  }, [activeIndex, setHeroTabIndex]);
 
   useEffect(() => {
     const timer = setInterval(() => {

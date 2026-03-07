@@ -55,14 +55,19 @@ export function ParticleOverlay({
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    let resizeTimer: ReturnType<typeof setTimeout>;
     const resize = () => {
       const dpr = window.devicePixelRatio || 1;
       canvas.width = canvas.offsetWidth * dpr;
       canvas.height = canvas.offsetHeight * dpr;
       ctx.scale(dpr, dpr);
     };
+    const debouncedResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(resize, 150);
+    };
     resize();
-    window.addEventListener('resize', resize);
+    window.addEventListener('resize', debouncedResize);
 
     // Initialize particles
     const w = canvas.offsetWidth;
@@ -117,7 +122,8 @@ export function ParticleOverlay({
 
     return () => {
       cancelAnimationFrame(animationRef.current);
-      window.removeEventListener('resize', resize);
+      clearTimeout(resizeTimer);
+      window.removeEventListener('resize', debouncedResize);
       document.removeEventListener('visibilitychange', onVisibility);
     };
   }, [count, color, createParticle]);

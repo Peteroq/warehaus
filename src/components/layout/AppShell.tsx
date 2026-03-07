@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, type ReactNode } from 'react';
+import { usePathname } from 'next/navigation';
 import { LayoutProvider, useLayout, EXPANDED, COLLAPSED } from '@/components/providers/LayoutProvider';
 import { Navbar } from '@/components/layout/Navbar';
 import { RightSidebar } from '@/components/layout/RightSidebar';
@@ -12,14 +13,29 @@ function AppShellInner({ children }: { children: ReactNode }) {
     leftCollapsed,
     rightCollapsed,
     setScrollProgress,
+    setSectionProgress,
     setActiveSection,
     setIsOnLight,
   } = useLayout();
 
+  const pathname = usePathname();
   const mainRef = useRef<HTMLDivElement>(null);
 
   const leftWidth = leftCollapsed ? COLLAPSED : EXPANDED;
   const rightWidth = rightCollapsed ? COLLAPSED : EXPANDED;
+
+  // Reset scroll state on route change so the sidebar starts fresh
+  useEffect(() => {
+    setSectionProgress(0);
+    setScrollProgress(0);
+    // Set activeSection to the first data-section on the new page
+    const first = document.querySelector('[data-section]');
+    if (first) {
+      setActiveSection((first as HTMLElement).dataset.section || 'hero');
+    } else {
+      setActiveSection('hero');
+    }
+  }, [pathname, setSectionProgress, setScrollProgress, setActiveSection]);
 
   useEffect(() => {
     // Light theme detection
@@ -31,7 +47,7 @@ function AppShellInner({ children }: { children: ReactNode }) {
         );
         setIsOnLight(anyLight);
       },
-      { threshold: [0, 0.1, 0.2, 0.3, 0.5, 0.7, 1] },
+      { threshold: [0.3] },
     );
     lightSections.forEach((el) => lightObserver.observe(el));
 
@@ -51,16 +67,42 @@ function AppShellInner({ children }: { children: ReactNode }) {
           setActiveSection(maxSection);
         }
       },
-      { threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1] },
+      { threshold: [0.2, 0.5, 0.8] },
     );
     allSections.forEach((el) => sectionObserver.observe(el));
 
-    // Scroll progress tracking
+    // Scroll progress tracking (RAF-throttled)
+    let rafId = 0;
     const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = docHeight > 0 ? scrollTop / docHeight : 0;
-      setScrollProgress(Math.min(Math.max(progress, 0), 1));
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = 0;
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = docHeight > 0 ? scrollTop / docHeight : 0;
+        setScrollProgress(Math.min(Math.max(progress, 0), 1));
+
+        // Compute fractional section index based on how far each section's
+        // top edge has scrolled past the top of the viewport.
+        // sectionProgress=0 when section 0's top is at viewport top,
+        // sectionProgress=1 when section 1's top reaches viewport top, etc.
+        const sections = Array.from(document.querySelectorAll('[data-section]'));
+        if (sections.length > 0) {
+          let fracIndex = 0;
+          for (let i = 0; i < sections.length - 1; i++) {
+            const currTop = (sections[i] as HTMLElement).offsetTop;
+            const nextTop = (sections[i + 1] as HTMLElement).offsetTop;
+            if (scrollTop >= currTop && scrollTop < nextTop) {
+              const t = (scrollTop - currTop) / (nextTop - currTop);
+              fracIndex = i + t;
+              break;
+            } else if (scrollTop >= nextTop && i === sections.length - 2) {
+              fracIndex = i + 1;
+            }
+          }
+          setSectionProgress(fracIndex);
+        }
+      });
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
@@ -68,9 +110,10 @@ function AppShellInner({ children }: { children: ReactNode }) {
     return () => {
       lightObserver.disconnect();
       sectionObserver.disconnect();
+      cancelAnimationFrame(rafId);
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [setScrollProgress, setActiveSection, setIsOnLight]);
+  }, [pathname, setScrollProgress, setSectionProgress, setActiveSection, setIsOnLight]);
 
   return (
     <div

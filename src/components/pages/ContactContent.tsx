@@ -15,24 +15,7 @@ import {
 } from 'lucide-react';
 import { useLayout } from '@/components/providers/LayoutProvider';
 import { StatusIndicator } from '@/components/react/ui/StatusIndicator';
-
-/* ───────── Fade-in on scroll ───────── */
-function useFadeIn() {
-  const [el, setEl] = useState<HTMLElement | null>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    if (!el) return;
-    const io = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setVisible(true); },
-      { threshold: 0.15 },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, [el]);
-
-  return [setEl, visible] as const;
-}
+import { useFadeIn } from '@/hooks/useFadeIn';
 
 /* ───────── Data ───────── */
 const inquiryTypes = [
