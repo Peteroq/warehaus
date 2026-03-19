@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
+import Image from 'next/image';
 import { useParallax } from '../animations/useParallax';
 import type { RefObject } from 'react';
 
@@ -30,12 +31,14 @@ export function ParallaxLayer({
       className={`absolute inset-0 will-change-transform ${className}`}
       style={{ overflow: 'hidden' }}
     >
-      <img
+      <Image
         src={src}
         alt={alt}
-        loading={eager ? 'eager' : 'lazy'}
-        decoding={eager ? 'sync' : 'async'}
-        className="h-full w-full object-cover"
+        fill
+        priority={eager}
+        className="object-cover"
+        sizes="100vw"
+        unoptimized
       />
     </div>
   );

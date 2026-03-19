@@ -1,9 +1,14 @@
 'use client';
 
-import { Suspense, lazy, useEffect, useState } from 'react';
+import { Suspense, lazy, useSyncExternalStore } from 'react';
 import { SceneLoader } from './SceneLoader';
 
 const ThreeScene = lazy(() => import('./ProjectSceneInner'));
+
+const emptySubscribe = () => () => {};
+function useIsMounted() {
+  return useSyncExternalStore(emptySubscribe, () => true, () => false);
+}
 
 interface ProjectSceneProps {
   modelUrl: string;
@@ -11,8 +16,7 @@ interface ProjectSceneProps {
 }
 
 export function ProjectScene({ modelUrl, className = '' }: ProjectSceneProps) {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  const mounted = useIsMounted();
 
   if (!mounted) return <SceneLoader className={`h-full w-full ${className}`} />;
 

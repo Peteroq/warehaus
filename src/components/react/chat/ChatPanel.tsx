@@ -17,12 +17,12 @@ export function ChatPanel() {
 
   const { messages, isLoading, sendMessage, error } = useChatApi();
 
-  // Inject welcome message on first open
-  useEffect(() => {
-    if (isOpen && !hasOpened) {
+  const handleOpen = (open: boolean) => {
+    setIsOpen(open);
+    if (open && !hasOpened) {
       setHasOpened(true);
     }
-  }, [isOpen, hasOpened]);
+  };
 
   // GSAP slide animation
   useEffect(() => {
@@ -48,7 +48,7 @@ export function ChatPanel() {
       {/* Toggle button — always visible */}
       <button
         type="button"
-        onClick={() => setIsOpen((prev) => !prev)}
+        onClick={() => handleOpen(!isOpen)}
         aria-label={isOpen ? 'Close chat panel' : 'Open chat panel'}
         className={cn(
           'fixed right-4 bottom-6 z-50 flex h-12 w-12 items-center justify-center',
@@ -98,7 +98,7 @@ export function ChatPanel() {
 
           <button
             type="button"
-            onClick={() => setIsOpen(false)}
+            onClick={() => handleOpen(false)}
             aria-label="Minimize chat"
             className={cn(
               'flex h-7 w-7 items-center justify-center rounded-md',

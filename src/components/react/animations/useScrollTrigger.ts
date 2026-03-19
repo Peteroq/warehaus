@@ -45,6 +45,7 @@ export function useScrollTrigger(options: UseScrollTriggerOptions) {
       timeline.current?.kill();
       timeline.current = null;
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- options are expected to be stable on mount
   }, []);
 
   return timeline;

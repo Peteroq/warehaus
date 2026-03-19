@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { PortableText, type PortableTextComponents } from '@portabletext/react';
 import type { PortableTextBlock } from '@portabletext/react';
 import { urlFor } from './image';
@@ -38,10 +39,11 @@ const components: PortableTextComponents = {
   types: {
     image: ({ value }: { value: SanityImage & { alt?: string } }) => (
       <figure className="my-6">
-        <img
+        <Image
           src={urlFor(value).width(1200).auto('format').url()}
           alt={value.alt || ''}
-          loading="lazy"
+          width={1200}
+          height={675}
           className="w-full rounded-lg"
         />
       </figure>

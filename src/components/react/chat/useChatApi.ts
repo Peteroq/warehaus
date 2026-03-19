@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import type { ChatMessage, ChatState } from '@/lib/chat/types';
 
 function createId(): string {
@@ -13,6 +13,9 @@ export function useChatApi() {
     isLoading: false,
     error: null,
   });
+
+  const messagesRef = useRef(state.messages);
+  messagesRef.current = state.messages;
 
   const sendMessage = useCallback(async (content: string) => {
     const userMessage: ChatMessage = {
@@ -35,7 +38,7 @@ export function useChatApi() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: content,
-          history: state.messages,
+          history: messagesRef.current,
         }),
       });
 
@@ -67,7 +70,7 @@ export function useChatApi() {
         error: errorMessage,
       }));
     }
-  }, [state.messages]);
+  }, []);
 
   return {
     messages: state.messages,

@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useState } from 'react';
+import { usePathname } from 'next/navigation';
 import {
   UserIcon,
   ChevronLeft,
@@ -11,60 +12,19 @@ import {
 import { useLayout } from '@/components/providers/LayoutProvider';
 import { useChatApi } from '@/components/react/chat/useChatApi';
 import { ChatMessages } from '@/components/react/chat/ChatMessages';
-
-const SECTION_CONTENT = [
-  {
-    key: 'hero',
-    heading: 'Dream your next digital product with us.',
-    description:
-      "We're here to help you plan and setup your strategy for your new venture in the digital space.",
-    tag: '\u3053\u3093\u306B\u3061\u306F\u4E16\u754C',
-    code: '0394',
-  },
-  {
-    key: 'work',
-    heading: 'Crafting digital experiences that matter.',
-    description:
-      'From mobile apps to web platforms, we build products that connect with your audience and drive real results.',
-    tag: '\u3082\u306E\u3065\u304F\u308A',
-    code: '0512',
-  },
-  {
-    key: 'cta',
-    heading: "Let's start building together.",
-    description:
-      'Join the collective and bring your vision to life. Your next great product starts with a conversation.',
-    tag: '\u59CB\u3081\u307E\u3057\u3087\u3046',
-    code: '0721',
-  },
-];
+import { HERO_TAB_SECTIONS, getSectionsForPath } from '@/lib/data/sidebarSections';
+import { SectionBlock } from '@/components/layout/SectionBlock';
+import { ScrollSyncedPanel } from '@/components/layout/ScrollSyncedPanel';
+import { SidebarPanel } from '@/components/layout/SidebarPanel';
+import { TabCyclePanel } from '@/components/layout/TabCyclePanel';
 
 export function RightSidebar() {
-  const { rightCollapsed, toggleRight, isOnLight, activeSection, scrollProgress } = useLayout();
+  const pathname = usePathname();
+  const { rightCollapsed, toggleRight, isOnLight, activeSection, heroTabIndex } = useLayout();
   const { messages, isLoading, sendMessage } = useChatApi();
   const [chatInput, setChatInput] = useState('');
-
-  const contentRef = useRef<HTMLDivElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [maxScroll, setMaxScroll] = useState(0);
-  const [containerHeight, setContainerHeight] = useState(0);
-
-  useEffect(() => {
-    const updateMeasurements = () => {
-      if (contentRef.current && containerRef.current) {
-        const cHeight = containerRef.current.clientHeight;
-        setContainerHeight(cHeight);
-        const contentHeight = contentRef.current.scrollHeight;
-        setMaxScroll(Math.max(0, contentHeight - cHeight));
-      }
-    };
-    updateMeasurements();
-    const ro = new ResizeObserver(updateMeasurements);
-    if (containerRef.current) ro.observe(containerRef.current);
-    return () => ro.disconnect();
-  }, [rightCollapsed]);
-
-  const translateY = -(scrollProgress * maxScroll);
+  const SECTION_CONTENT = getSectionsForPath(pathname);
+  const isHomePage = pathname === '/';
 
   const handleSend = () => {
     const trimmed = chatInput.trim();
@@ -117,14 +77,16 @@ export function RightSidebar() {
                 isOnLight ? 'text-gray-400' : 'text-gray-300'
               }`}
             >
-              {SECTION_CONTENT.find((s) => s.key === activeSection)?.code || '0394'}
+              {isHomePage && activeSection === 'hero'
+                ? HERO_TAB_SECTIONS[heroTabIndex]?.code || '0001'
+                : SECTION_CONTENT.find((s) => s.key === activeSection)?.code || '0394'}
             </div>
           </div>
         </div>
       ) : (
         <div className="flex flex-col h-full p-6">
           {/* Top Bar */}
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center justify-between mb-6">
             <button
               onClick={toggleRight}
               className={`w-7 h-7 flex items-center justify-center rounded-full backdrop-blur-md transition-all duration-500 border ${
@@ -144,78 +106,67 @@ export function RightSidebar() {
             </span>
           </div>
 
-          {/* Scroll-synced content */}
-          <div ref={containerRef} className="flex-1 overflow-hidden relative">
-            <div
-              ref={contentRef}
-              className="will-change-transform"
-              style={{ transform: `translateY(${translateY}px)` }}
-            >
-              {SECTION_CONTENT.map((data) => (
-                <div
-                  key={data.key}
-                  className="flex flex-col py-6"
-                  style={{
-                    height: containerHeight > 0 ? `${containerHeight}px` : 'auto',
-                  }}
-                >
-                  <h2
-                    className={`text-3xl font-bold leading-tight mb-4 transition-colors duration-500 ${
-                      isOnLight ? 'text-gray-900' : 'text-white'
-                    }`}
+          {/* Section-synced content */}
+          <ScrollSyncedPanel>
+            {({ containerHeight, mounted }) =>
+              SECTION_CONTENT.map((data, i) => {
+                const isActive = mounted ? data.key === activeSection : i === 0;
+                const isHeroSlot = isHomePage && data.key === 'hero';
+                return (
+                  <SidebarPanel
+                    key={data.key}
+                    active={isActive}
+                    height={containerHeight}
+                    mounted={mounted}
                   >
-                    {data.heading}
-                  </h2>
-                  <p
-                    className={`text-sm leading-relaxed transition-colors duration-500 ${
-                      isOnLight ? 'text-gray-500' : 'text-gray-200'
-                    }`}
-                  >
-                    {data.description}
-                  </p>
-                  <div className="flex justify-between items-end mt-auto">
-                    <div
-                      className={`text-[10px] transition-colors duration-500 ${
-                        isOnLight ? 'text-gray-400' : 'text-gray-300'
-                      }`}
-                    >
-                      {data.tag}
-                    </div>
-                    <div
-                      className={`text-xs font-mono transition-colors duration-500 ${
-                        isOnLight ? 'text-gray-400' : 'text-gray-300'
-                      }`}
-                    >
-                      {data.code}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+                    {isHeroSlot ? (
+                      <TabCyclePanel activeIndex={heroTabIndex}>
+                        {HERO_TAB_SECTIONS.map((tabData) => (
+                          <SectionBlock key={tabData.key} data={tabData} isOnLight={isOnLight} />
+                        ))}
+                      </TabCyclePanel>
+                    ) : (
+                      <SectionBlock data={data} isOnLight={isOnLight} />
+                    )}
+                  </SidebarPanel>
+                );
+              })
+            }
+          </ScrollSyncedPanel>
 
           {/* Chat section */}
-          <div className="mt-6">
-            <div className="rounded-2xl p-[2px] relative shadow-lg transition-all duration-500 bg-black text-white">
-              <div className="flex items-center gap-2 mb-0 px-3 py-2">
-                <div className="text-xs font-bold uppercase tracking-wider text-gray-300">
+          <div className="mt-4 relative">
+            {/* Avatar — overlapping top-right */}
+            <div className="absolute -top-14 right-2 w-24 h-24 z-10 pointer-events-none">
+              <img
+                src="/images/PAthfinder.png"
+                alt="Pathfinder"
+                className="w-full h-full object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]"
+              />
+            </div>
+
+            <div className="rounded-2xl relative shadow-lg bg-[#0a0a0a] overflow-hidden">
+              {/* Header */}
+              <div className="flex items-center gap-2 px-4 pt-3 pb-2">
+                <div className="text-xs font-bold uppercase tracking-[0.15em] text-gray-300">
                   Start Here
                 </div>
               </div>
 
-              <div className="rounded-xl bg-white p-3 space-y-3">
+              {/* White chat area */}
+              <div className="rounded-xl bg-white mx-1.5 mb-1.5 p-3 space-y-2">
                 {messages.length > 0 ? (
                   <div className="max-h-32 overflow-y-auto">
                     <ChatMessages messages={messages} />
                   </div>
                 ) : (
-                  <div className="text-xs p-2.5 rounded-lg bg-gray-100 text-gray-900">
+                  <div className="text-[13px] p-2.5 rounded-lg bg-gray-50 border border-gray-100 text-gray-800 leading-relaxed">
                     What can we help you build?
                   </div>
                 )}
 
                 <textarea
-                  className="w-full text-xs p-2.5 rounded-lg resize-none border-0 focus:ring-1 focus:ring-gray-300 outline-none h-16 bg-white text-black placeholder-gray-400"
+                  className="w-full text-[13px] p-2.5 rounded-lg resize-none border-0 outline-none h-14 bg-white text-gray-800 placeholder-gray-400"
                   placeholder="Share your thoughts..."
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
@@ -231,7 +182,7 @@ export function RightSidebar() {
                   <button
                     onClick={handleSend}
                     disabled={isLoading || !chatInput.trim()}
-                    className="text-xs font-bold py-1.5 px-4 rounded-full flex items-center gap-2 bg-black text-white hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed"
+                    className="text-xs font-bold py-2 px-5 rounded-lg flex items-center gap-2 bg-[#0a0a0a] text-white hover:bg-gray-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     SEND <SendIcon className="w-3 h-3" />
                   </button>

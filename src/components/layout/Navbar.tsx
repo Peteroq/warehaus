@@ -1,43 +1,78 @@
 'use client';
 
+import { useRef, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   HomeIcon,
-  BriefcaseIcon,
-  UsersIcon,
-  MailIcon,
+  Compass,
+  Hammer,
+  TowerControl,
+  BookOpen,
+  DoorOpen,
   AlignLeftIcon,
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
 import { useLayout, EXPANDED, COLLAPSED } from '@/components/providers/LayoutProvider';
 
-const NAV_LINKS = [
+interface NavLink {
+  icon: typeof HomeIcon;
+  label: string;
+  href: string;
+  description: string;
+  group?: string;
+  accentClass?: string;
+  accentColor?: string;
+}
+
+const NAV_LINKS: NavLink[] = [
   {
     icon: HomeIcon,
     label: 'HOME',
     href: '/',
-    description:
-      'Welcome to the world of warehaus, a virtual space for building amazing digital products.',
+    description: 'Welcome to the world of Warehaus — where dreams are forged into reality.',
   },
   {
-    icon: BriefcaseIcon,
-    label: 'WORK',
-    href: '/work',
-    description: 'Explore our portfolio of digital products and creative projects.',
+    icon: Compass,
+    label: 'DREAM',
+    href: '/dream',
+    description: 'The Navigator Realm. Chart vision into strategy.',
+    group: 'PILLARS',
+    accentClass: 'text-indigo-400',
+    accentColor: '#818cf8',
   },
   {
-    icon: UsersIcon,
-    label: 'ABOUT',
-    href: '/about',
-    description: 'Meet the team behind warehaus and learn our story.',
+    icon: Hammer,
+    label: 'DESIGN',
+    href: '/design',
+    description: 'The Forge. Shape ideas into form.',
+    group: 'PILLARS',
+    accentClass: 'text-orange-400',
+    accentColor: '#fb923c',
   },
   {
-    icon: MailIcon,
+    icon: TowerControl,
+    label: 'DEVELOP',
+    href: '/develop',
+    description: 'The High Tower. Build the impossible.',
+    group: 'PILLARS',
+    accentClass: 'text-yellow-400',
+    accentColor: '#facc15',
+  },
+  {
+    icon: BookOpen,
+    label: 'CODEX',
+    href: '/codex',
+    description: 'The Codex of Creations. Our collected works.',
+    accentColor: '#c084fc',
+  },
+  {
+    icon: DoorOpen,
     label: 'CONTACT',
     href: '/contact',
-    description: 'Get in touch. We’d love to hear about your next project.',
+    description: 'Step inside the house. Begin your journey with us.',
+    accentColor: '#22d3ee',
   },
 ];
 
@@ -46,11 +81,144 @@ function isActiveRoute(href: string, pathname: string) {
   return pathname.startsWith(href);
 }
 
+/* ───────── Expandable nav item ───────── */
+function NavItem({
+  link,
+  active,
+  collapsed,
+  isOnLight,
+}: {
+  link: NavLink;
+  active: boolean;
+  collapsed: boolean;
+  isOnLight: boolean;
+}) {
+  const { icon: Icon, label, href, description, accentClass, accentColor } = link;
+  const expandRef = useRef<HTMLDivElement>(null);
+
+  // Animate height on expand/collapse
+  useEffect(() => {
+    const el = expandRef.current;
+    if (!el) return;
+
+    if (active && !collapsed) {
+      // Expand: measure scrollHeight, animate to it
+      el.style.height = '0px';
+      el.style.opacity = '0';
+      // Force reflow
+      void el.offsetHeight;
+      const target = el.scrollHeight;
+      el.style.height = `${target}px`;
+      el.style.opacity = '1';
+
+      const onEnd = () => {
+        el.style.height = 'auto';
+      };
+      el.addEventListener('transitionend', onEnd, { once: true });
+      return () => el.removeEventListener('transitionend', onEnd);
+    } else {
+      // Collapse: if currently open, animate from current height to 0
+      if (el.style.height === 'auto' || el.offsetHeight > 0) {
+        const current = el.offsetHeight;
+        el.style.height = `${current}px`;
+        el.style.opacity = '1';
+        void el.offsetHeight;
+        el.style.height = '0px';
+        el.style.opacity = '0';
+      }
+    }
+  }, [active, collapsed]);
+
+  return (
+    <div>
+      <Link
+        href={href}
+        title={label}
+        className={`relative flex items-center text-sm font-bold transition-all duration-400 group rounded-xl px-3 py-2.5 ${
+          collapsed ? 'justify-center' : 'gap-3'
+        } ${
+          active
+            ? isOnLight
+              ? 'text-gray-900 bg-black/5'
+              : 'text-white bg-white/[0.06]'
+            : isOnLight
+              ? 'text-gray-500 hover:text-gray-900 hover:bg-black/[0.03]'
+              : 'text-gray-400 hover:text-white hover:bg-white/[0.03]'
+        }`}
+      >
+        <Icon
+          className={`w-4 h-4 flex-shrink-0 transition-all duration-400 ${
+            active ? accentClass || '' : ''
+          }`}
+          style={active && accentColor ? { color: accentColor } : undefined}
+        />
+        {!collapsed && <span>{label}</span>}
+
+        {/* Active dot — collapsed only */}
+        {active && collapsed && (
+          <div
+            className="absolute -right-0.5 top-1/2 -translate-y-1/2 w-1 h-4 rounded-full transition-all duration-500"
+            style={{ backgroundColor: accentColor || '#00e5ff' }}
+          />
+        )}
+      </Link>
+
+      {/* Expandable content — only rendered when sidebar is expanded */}
+      {!collapsed && (
+        <div
+          ref={expandRef}
+          className="overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
+          style={{ height: 0, opacity: 0 }}
+        >
+          <div className="px-1 pt-2 pb-3">
+            {/* Image card */}
+            <Link
+              href={href}
+              className="block w-full h-28 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-orange-400 mb-2.5 relative overflow-hidden group cursor-pointer"
+            >
+              <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-300" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full bg-white/40" />
+                </div>
+              </div>
+            </Link>
+
+            {/* Description */}
+            <p
+              className={`text-[10px] leading-relaxed transition-colors duration-500 ${
+                isOnLight ? 'text-gray-500' : 'text-gray-400'
+              }`}
+            >
+              {description}
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ───────── Main Navbar ───────── */
 export function Navbar() {
   const pathname = usePathname();
   const { leftCollapsed, toggleLeft, isOnLight } = useLayout();
-
   const width = leftCollapsed ? COLLAPSED : EXPANDED;
+
+  // Build group dividers
+  const navLinksWithDividers = NAV_LINKS.reduce<{
+    lastGroup: string | undefined;
+    items: { link: NavLink; divider: boolean }[];
+  }>(
+    (acc, link) => {
+      const showDivider = !!(link.group && link.group !== acc.lastGroup);
+      acc.items.push({ link, divider: showDivider });
+      if (link.group) acc.lastGroup = link.group;
+      else acc.lastGroup = undefined;
+      return acc;
+    },
+    { lastGroup: undefined, items: [] },
+  ).items;
 
   return (
     <div
@@ -64,10 +232,10 @@ export function Navbar() {
             : 'bg-white/5 border border-white/15 text-white shadow-[0_0_40px_rgba(0,0,0,0.3)]'
         }`}
       >
-        <div className={`flex flex-col h-full ${leftCollapsed ? 'p-4 items-center' : 'p-7'}`}>
+        <div className={`flex flex-col h-full ${leftCollapsed ? 'p-4 items-center' : 'p-7'} overflow-y-auto overflow-x-hidden`}>
           {/* Top Bar */}
           <div
-            className={`${
+            className={`flex-shrink-0 ${
               leftCollapsed
                 ? 'flex flex-col items-center gap-4'
                 : 'flex items-center justify-between'
@@ -110,79 +278,40 @@ export function Navbar() {
           </div>
 
           {/* Nav Links */}
-          <div className={`flex-1 flex flex-col gap-6 ${leftCollapsed ? 'items-center' : ''}`}>
-              {NAV_LINKS.map(({ icon: Icon, label, href, description }) => {
-                const active = isActiveRoute(href, pathname);
-                const showActiveBlock = active && !leftCollapsed;
+          <div className={`flex-1 flex flex-col gap-0.5 ${leftCollapsed ? 'items-center' : ''}`}>
+            {navLinksWithDividers.map(({ link, divider: showDivider }) => {
+              const active = isActiveRoute(link.href, pathname);
 
-                if (showActiveBlock) {
-                  return (
-                    <div key={label} className="mb-6">
-                      <Link
-                        href={href}
-                        title={label}
-                        className={`flex items-center gap-3 font-bold text-sm mb-4 ${
-                          active ? (isOnLight ? 'text-gray-900' : 'text-white') : ''
-                        }`}
-                      >
-                        <Icon className="w-4 h-4 flex-shrink-0" />
-                        <span>{label}</span>
-                      </Link>
-
-                      {/* Decorative Card - same as HOME active state */}
-                      <Link
-                        href={href}
-                        className="block w-full h-32 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-orange-400 mb-3 relative overflow-hidden group cursor-pointer"
-                      >
-                        <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors" />
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center">
-                            <div className="w-8 h-8 rounded-full bg-white/40" />
-                          </div>
-                        </div>
-                      </Link>
-
-                      <p
-                        className={`text-[10px] leading-tight transition-colors duration-500 ${
-                          isOnLight ? 'text-gray-500' : 'text-gray-300'
-                        }`}
-                      >
-                        {description}
-                      </p>
-                    </div>
-                  );
-                }
-
-                return (
-                  <Link
-                    key={label}
-                    href={href}
-                    title={label}
-                    className={`flex items-center text-sm font-bold transition-all duration-500 group rounded-xl px-3 py-2.5 border ${
-                      leftCollapsed ? 'justify-center' : 'gap-3'
-                    } ${
-                      active
-                        ? isOnLight
-                          ? 'text-gray-900 bg-black/5 border-black/15'
-                          : 'text-white bg-white/10 border-white/20'
-                        : isOnLight
-                          ? 'text-gray-500 hover:text-gray-900 border-black/10 hover:border-black/15 hover:bg-black/5'
-                          : 'text-gray-200 hover:text-white border-white/10 hover:border-white/20 hover:bg-white/5'
+              let divider = null;
+              if (showDivider && link.group && !leftCollapsed) {
+                divider = (
+                  <div
+                    key={`divider-${link.group}`}
+                    className={`mt-3 mb-1 px-3 text-[9px] font-bold tracking-[0.2em] uppercase transition-colors duration-500 ${
+                      isOnLight ? 'text-gray-400' : 'text-gray-500'
                     }`}
                   >
-                    <Icon
-                      className={`w-4 h-4 flex-shrink-0 transition-colors duration-500 ${
-                        isOnLight ? 'group-hover:text-gray-900' : 'group-hover:text-white'
-                      }`}
-                    />
-                    {!leftCollapsed && <span>{label}</span>}
-                  </Link>
+                    {link.group}
+                  </div>
                 );
-              })}
+              }
+
+              return (
+                <div key={link.label}>
+                  {divider}
+                  <NavItem
+                    link={link}
+                    active={active}
+                    collapsed={leftCollapsed}
+                    isOnLight={isOnLight}
+                  />
+                </div>
+              );
+            })}
           </div>
 
           {/* Bottom Section */}
-          <div className={`mt-auto ${leftCollapsed ? 'flex flex-col items-center' : ''}`}>
+          <div className={`flex-shrink-0 mt-auto pt-4 ${leftCollapsed ? 'flex flex-col items-center' : ''}`}>
             {!leftCollapsed ? (
               <>
                 <div className="mb-4 flex gap-2">
