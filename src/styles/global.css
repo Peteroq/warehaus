@@ -89,6 +89,15 @@ canvas.r3f {
   scrollbar-color: var(--border) transparent;
 }
 
+/* Hide horizontal scrollbar on tab slider */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
 /* Progress bar animation for hero carousel */
 @keyframes progress {
   from {
