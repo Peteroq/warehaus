@@ -62,19 +62,19 @@ export function MenuOverlay() {
         aria-hidden="true"
       />
 
-      {/* Menu panel — opens upward from bottom-left */}
+      {/* Menu panel — opens upward above the navbar, same width */}
       <div
         ref={panelRef}
         role="dialog"
         aria-label="Navigation menu"
-        className={`fixed left-3 z-50 rounded-2xl bg-[#111]/95 backdrop-blur-2xl border border-white/[0.1] shadow-[0_0_40px_rgba(0,0,0,0.5)] p-2 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+        className={`fixed left-1/2 -translate-x-1/2 z-50 rounded-2xl bg-[#111]/95 backdrop-blur-2xl border border-white/[0.1] shadow-[0_0_40px_rgba(0,0,0,0.5)] p-2 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${
           menuOpen
             ? 'opacity-100 translate-y-0'
             : 'opacity-0 translate-y-4 pointer-events-none'
         }`}
-        style={{ bottom: 'calc(64px + max(0.5rem, env(safe-area-inset-bottom)))' }}
+        style={{ bottom: 'calc(1.75rem + 56px + 12px)', width: 'fit-content', minWidth: 'var(--nav-width, auto)' }}
       >
-        <nav className="flex flex-col gap-0.5 min-w-[200px]">
+        <nav className="flex flex-col gap-0.5">
           {MENU_ITEMS.map(({ icon: Icon, label, href }) => {
             const isActive = pathname === href;
             return (

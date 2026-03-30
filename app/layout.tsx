@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Space_Grotesk, DM_Sans } from 'next/font/google';
 import { VercelToolbar } from '@vercel/toolbar/next';
 import { AppShell } from '@/components/layout/AppShell';
+import { AgentationProvider } from '@/components/providers/AgentationProvider';
 import '@/styles/global.css';
 
 const spaceGrotesk = Space_Grotesk({
@@ -32,6 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${spaceGrotesk.variable} ${dmSans.variable}`}>
       <body className="bg-background text-foreground font-body antialiased" suppressHydrationWarning>
         <AppShell>{children}</AppShell>
+        <AgentationProvider />
         {(process.env.NODE_ENV === 'development' ||
           process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview') && <VercelToolbar />}
       </body>

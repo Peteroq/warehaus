@@ -33,7 +33,7 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
   }, []);
 
   return (
-    <div className="flex items-end gap-2 border-t border-border px-4 py-3">
+    <div className="flex items-end gap-2 px-4 py-3">
       <textarea
         value={value}
         onChange={handleChange}
@@ -42,9 +42,9 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
         rows={1}
         placeholder="Type a message..."
         className={cn(
-          'flex-1 resize-none rounded-lg bg-surface px-3 py-2 text-sm text-foreground',
-          'placeholder:text-muted',
-          'border border-border-subtle focus:border-accent/40 focus:outline-none',
+          'flex-1 resize-none rounded-xl bg-white/70 backdrop-blur-2xl px-3 py-2 text-sm text-black',
+          'placeholder:text-black/40',
+          'border border-white/20 focus:border-white/40 focus:outline-none',
           'disabled:cursor-not-allowed disabled:opacity-50'
         )}
       />
@@ -55,9 +55,9 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
         disabled={disabled || !value.trim()}
         aria-label="Send message"
         className={cn(
-          'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg',
-          'bg-accent/15 text-accent transition-colors',
-          'hover:bg-accent/25',
+          'flex h-9 w-9 shrink-0 items-center justify-center rounded-xl',
+          'bg-white/70 backdrop-blur-2xl text-black/60 border border-white/20 transition-colors',
+          'hover:bg-white/80 hover:text-black',
           'disabled:cursor-not-allowed disabled:opacity-40'
         )}
       >

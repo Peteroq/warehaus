@@ -3,6 +3,7 @@ export interface ChatMessage {
   role: 'user' | 'assistant' | 'system';
   content: string;
   timestamp: Date;
+  sender?: 'dreamer' | 'designer' | 'developer';
 }
 
 export interface ChatState {

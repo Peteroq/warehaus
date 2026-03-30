@@ -2,47 +2,74 @@
 
 import { useRef, useEffect, useState, useCallback } from 'react';
 import { useLayout, type ActiveTab } from '@/components/providers/LayoutProvider';
-import { Menu, MessageCircle } from 'lucide-react';
+import { Menu, MessageCircle, ChevronDown } from 'lucide-react';
 
 const TABS: { label: string; value: ActiveTab }[] = [
-  { label: 'DEVELOP', value: 'develop' },
   { label: 'DREAM', value: 'dream' },
   { label: 'DESIGN', value: 'design' },
+  { label: 'DEVELOP', value: 'develop' },
 ];
 
+const TAB_COLORS: Record<ActiveTab, string> = {
+  dream: 'text-purple-500',
+  design: 'text-pink-500',
+  develop: 'text-emerald-500',
+};
+
 export function BottomNav() {
-  const { activeTab, setActiveTab, toggleMenu, menuOpen, toggleChatOverlay } = useLayout();
+  const { activeTab, setActiveTab, toggleMenu, menuOpen, toggleChatOverlay, chatOverlayOpen } = useLayout();
+  const navRef = useRef<HTMLElement>(null);
   const tabRefs = useRef<Map<ActiveTab, HTMLButtonElement>>(new Map());
   const containerRef = useRef<HTMLDivElement>(null);
   const [pill, setPill] = useState<{ left: number; width: number } | null>(null);
+  const [indicators, setIndicators] = useState<Map<ActiveTab, { center: number }>>(new Map());
 
-  const updatePill = useCallback(() => {
+  const updatePositions = useCallback(() => {
     if (!containerRef.current) return;
-    const el = tabRefs.current.get(activeTab);
-    if (!el) return;
     const containerRect = containerRef.current.getBoundingClientRect();
-    const tabRect = el.getBoundingClientRect();
-    setPill({
-      left: tabRect.left - containerRect.left,
-      width: tabRect.width,
+
+    // Update pill
+    const el = tabRefs.current.get(activeTab);
+    if (el) {
+      const tabRect = el.getBoundingClientRect();
+      setPill({
+        left: tabRect.left - containerRect.left,
+        width: tabRect.width,
+      });
+    }
+
+    // Update indicator positions for all tabs
+    const newIndicators = new Map<ActiveTab, { center: number }>();
+    tabRefs.current.forEach((btn, tab) => {
+      const r = btn.getBoundingClientRect();
+      newIndicators.set(tab, { center: r.left - containerRect.left + r.width / 2 });
     });
+    setIndicators(newIndicators);
   }, [activeTab]);
 
   useEffect(() => {
-    updatePill();
-    const timer = setTimeout(updatePill, 50);
+    updatePositions();
+    const timer = setTimeout(updatePositions, 50);
     return () => clearTimeout(timer);
-  }, [updatePill]);
+  }, [updatePositions]);
 
   useEffect(() => {
-    window.addEventListener('resize', updatePill);
-    return () => window.removeEventListener('resize', updatePill);
-  }, [updatePill]);
+    window.addEventListener('resize', updatePositions);
+    return () => window.removeEventListener('resize', updatePositions);
+  }, [updatePositions]);
+
+  // Expose nav width as CSS variable for menu overlay
+  useEffect(() => {
+    if (!navRef.current) return;
+    const w = navRef.current.offsetWidth;
+    document.documentElement.style.setProperty('--nav-width', `${w}px`);
+  });
 
   return (
     <nav
-      className="fixed bottom-0 inset-x-0 z-50 flex items-center justify-between px-4 py-3 bg-[#0a0a0a] backdrop-blur-2xl border-t border-white/15"
-      style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))' }}
+      ref={navRef}
+      className="fixed left-1/2 -translate-x-1/2 z-50 flex items-center justify-center gap-2 px-4 pt-3 bg-transparent"
+      style={{ bottom: '1.75rem' }}
     >
       {/* Menu button */}
       <button
@@ -50,7 +77,7 @@ export function BottomNav() {
         onClick={toggleMenu}
         aria-label={menuOpen ? 'Close menu' : 'Open menu'}
         aria-expanded={menuOpen}
-        className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/[0.06] border border-white/[0.08] text-white/70 hover:text-white hover:bg-white/[0.1] transition-colors"
+        className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/70 backdrop-blur-2xl border border-white/20 text-black/60 hover:text-black hover:bg-white/80 transition-colors"
       >
         <Menu className="w-5 h-5" />
       </button>
@@ -60,44 +87,75 @@ export function BottomNav() {
         ref={containerRef}
         role="tablist"
         aria-label="Content tabs"
-        className="relative flex items-center gap-0.5 rounded-2xl bg-white/[0.06] border border-white/[0.08] p-1"
+        className="relative flex flex-col items-center gap-0.5 rounded-2xl bg-white/70 backdrop-blur-2xl border border-white/20 p-1"
       >
-        {/* Sliding pill */}
-        {pill && (
-          <div
-            className="absolute top-1 h-[calc(100%-8px)] rounded-xl bg-white/[0.12] border border-white/[0.1] pointer-events-none transition-all duration-400 ease-[cubic-bezier(0.4,0,0.2,1)]"
-            style={{ left: `${pill.left}px`, width: `${pill.width}px` }}
-          />
-        )}
-
-        {TABS.map(({ label, value }) => {
+        {/* Floating indicators above tabs — positioned per tab */}
+        {TABS.map(({ value }) => {
           const isActive = activeTab === value;
+          const pos = indicators.get(value);
+          const w = isActive ? 48 : 24;
           return (
-            <button
-              key={value}
-              ref={(el) => { if (el) tabRefs.current.set(value, el); }}
-              role="tab"
-              aria-selected={isActive}
-              aria-controls={`tabpanel-${value}`}
-              onClick={() => setActiveTab(value)}
-              className={`relative z-10 px-4 py-2 text-xs font-bold tracking-wider rounded-xl transition-colors duration-300 ${
-                isActive ? 'text-white' : 'text-white/40 hover:text-white/60'
-              }`}
+            <div
+              key={`indicator-${value}`}
+              className="absolute -top-3 pointer-events-none"
+              style={{
+                left: pos ? `${pos.center - w / 2}px` : '50%',
+                width: `${w}px`,
+                transition: 'left 200ms cubic-bezier(0.4, 0, 0.2, 1), width 200ms cubic-bezier(0.4, 0, 0.2, 1), opacity 150ms ease',
+              }}
             >
-              {label}
-            </button>
+              <div
+                className={`h-[5px] w-full rounded-full ${
+                  isActive ? 'bg-white/90' : 'bg-white/30'
+                }`}
+              />
+            </div>
           );
         })}
+
+        {/* Tab buttons row */}
+        <div className="flex items-center gap-0.5">
+          {/* Sliding pill */}
+          {pill && (
+            <div
+              className="absolute top-1 h-[calc(100%-8px)] rounded-xl bg-white/60 border border-white/40 pointer-events-none transition-all duration-400 ease-[cubic-bezier(0.4,0,0.2,1)]"
+              style={{ left: `${pill.left}px`, width: `${pill.width}px` }}
+            />
+          )}
+
+          {TABS.map(({ label, value }) => {
+            const isActive = activeTab === value;
+            return (
+              <button
+                key={value}
+                ref={(el) => { if (el) tabRefs.current.set(value, el); }}
+                role="tab"
+                aria-selected={isActive}
+                aria-controls={`tabpanel-${value}`}
+                onClick={() => setActiveTab(value)}
+                className={`relative z-10 w-20 text-center py-2 text-xs font-bold tracking-wider rounded-xl transition-colors duration-300 ${
+                  isActive ? 'text-black' : 'text-black/40 hover:text-black/60'
+                }`}
+              >
+                {label}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Chat button */}
       <button
         type="button"
         onClick={toggleChatOverlay}
-        aria-label="Open chat"
-        className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent/15 border border-accent/25 text-accent hover:bg-accent/25 transition-colors"
+        aria-label={chatOverlayOpen ? 'Close chat' : 'Open chat'}
+        className={`flex h-11 w-11 items-center justify-center rounded-2xl bg-white/70 backdrop-blur-2xl border border-white/20 hover:bg-white/80 transition-colors ${TAB_COLORS[activeTab]}`}
       >
-        <MessageCircle className="w-5 h-5" />
+        {chatOverlayOpen ? (
+          <ChevronDown className="w-5 h-5" />
+        ) : (
+          <MessageCircle className="w-5 h-5" />
+        )}
       </button>
     </nav>
   );
