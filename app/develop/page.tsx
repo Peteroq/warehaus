@@ -1,10 +1,5 @@
-import type { Metadata } from 'next';
-import { DevelopContent } from '@/components/pages/DevelopContent';
-
-export const metadata: Metadata = {
-  title: 'Develop — The High Tower — Warehaus',
-};
+import { redirect } from 'next/navigation';
 
 export default function DevelopPage() {
-  return <DevelopContent />;
+  redirect('/?tab=develop');
 }

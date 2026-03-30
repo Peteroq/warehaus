@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Space_Grotesk, DM_Sans } from 'next/font/google';
+import { VercelToolbar } from '@vercel/toolbar/next';
 import { AppShell } from '@/components/layout/AppShell';
 import '@/styles/global.css';
 
@@ -29,8 +30,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${spaceGrotesk.variable} ${dmSans.variable}`}>
-      <body className="bg-background text-foreground font-body antialiased">
+      <body className="bg-background text-foreground font-body antialiased" suppressHydrationWarning>
         <AppShell>{children}</AppShell>
+        {(process.env.NODE_ENV === 'development' ||
+          process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview') && <VercelToolbar />}
       </body>
     </html>
   );
