@@ -22,6 +22,8 @@
     "@vercel/toolbar": "^0.2.2",
     "agentation": "^3.0.2",
     "clsx": "^2.1.1",
+    "embla-carousel-react": "^8.6.0",
+    "embla-carousel-wheel-gestures": "^8.1.0",
     "gsap": "^3.14.2",
     "lucide-react": "^0.563.0",
     "next": "^15.3.3",

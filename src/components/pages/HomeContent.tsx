@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useRef, useCallback } from 'react';
+import useEmblaCarousel from 'embla-carousel-react';
+import { WheelGesturesPlugin } from 'embla-carousel-wheel-gestures';
 import { useLayout, type ActiveTab } from '@/components/providers/LayoutProvider';
 import { useScrollObserver } from '@/hooks/useScrollObserver';
 import { DreamContent } from '@/components/pages/DreamContent';
@@ -18,11 +20,19 @@ const TAB_INDEX: Record<ActiveTab, number> = {
 export function HomeContent() {
   const { activeTab, setActiveTab } = useLayout();
 
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    loop: false,
+    dragFree: false,
+    duration: 20, // Lower = snappier (default 25)
+    skipSnaps: false,
+    containScroll: 'trimSnaps',
+  }, [WheelGesturesPlugin({ forceWheelAxis: 'x' })]);
+
+  const isProgrammatic = useRef(false);
+
   const dreamRef = useRef<HTMLDivElement>(null);
   const designRef = useRef<HTMLDivElement>(null);
   const developRef = useRef<HTMLDivElement>(null);
-  const isProgammaticScroll = useRef(false);
 
   const refs: Record<ActiveTab, React.RefObject<HTMLDivElement | null>> = {
     dream: dreamRef,
@@ -51,65 +61,35 @@ export function HomeContent() {
     window.history.replaceState({}, '', url.toString());
   }, [activeTab]);
 
-  // Scroll to the active tab's panel when tab changes (from BottomNav clicks)
+  // Sync: tab state → embla (from BottomNav clicks)
   useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
-
+    if (!emblaApi) return;
     const targetIndex = TAB_INDEX[activeTab];
-    const targetLeft = targetIndex * container.offsetWidth;
-
-    // Only scroll if we're not already at the right position
-    if (Math.abs(container.scrollLeft - targetLeft) > 2) {
-      isProgammaticScroll.current = true;
-      container.scrollTo({ left: targetLeft, behavior: 'smooth' });
+    if (emblaApi.selectedScrollSnap() !== targetIndex) {
+      isProgrammatic.current = true;
+      emblaApi.scrollTo(targetIndex);
     }
-  }, [activeTab]);
+  }, [activeTab, emblaApi]);
 
-  // Detect when swipe/scroll settles on a new panel and update active tab
-  const handleScrollEnd = useCallback(() => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
-
-    // If this was a programmatic scroll, just clear the flag
-    if (isProgammaticScroll.current) {
-      isProgammaticScroll.current = false;
+  // Sync: embla → tab state (from swipe)
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    if (isProgrammatic.current) {
+      isProgrammatic.current = false;
       return;
     }
-
-    const panelWidth = container.offsetWidth;
-    const index = Math.round(container.scrollLeft / panelWidth);
-    const clamped = Math.max(0, Math.min(index, TABS.length - 1));
-    const newTab = TABS[clamped];
-
-    if (newTab !== activeTab) {
+    const index = emblaApi.selectedScrollSnap();
+    const newTab = TABS[index];
+    if (newTab && newTab !== activeTab) {
       setActiveTab(newTab);
     }
-  }, [activeTab, setActiveTab]);
+  }, [emblaApi, activeTab, setActiveTab]);
 
-  // Listen for scrollend (modern browsers) with fallback
   useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
-
-    // Modern browsers support 'scrollend'
-    if ('onscrollend' in window) {
-      container.addEventListener('scrollend', handleScrollEnd);
-      return () => container.removeEventListener('scrollend', handleScrollEnd);
-    }
-
-    // Fallback: debounce scroll events
-    let timeout: ReturnType<typeof setTimeout>;
-    const onScroll = () => {
-      clearTimeout(timeout);
-      timeout = setTimeout(handleScrollEnd, 100);
-    };
-    container.addEventListener('scroll', onScroll, { passive: true });
-    return () => {
-      clearTimeout(timeout);
-      container.removeEventListener('scroll', onScroll);
-    };
-  }, [handleScrollEnd]);
+    if (!emblaApi) return;
+    emblaApi.on('select', onSelect);
+    return () => { emblaApi.off('select', onSelect); };
+  }, [emblaApi, onSelect]);
 
   // Reset vertical scroll to top on tab switch
   useEffect(() => {
@@ -121,26 +101,24 @@ export function HomeContent() {
   }, [activeTab]);
 
   return (
-    <div
-      ref={scrollContainerRef}
-      className="w-full h-[100dvh] flex overflow-x-auto overflow-y-hidden snap-x snap-mandatory scrollbar-none"
-      style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}
-    >
-      {TABS.map((tab) => (
-        <div
-          key={tab}
-          id={`tabpanel-${tab}`}
-          role="tabpanel"
-          aria-labelledby={`tab-${tab}`}
-          ref={refs[tab]}
-          className="h-full w-full shrink-0 snap-start snap-always overflow-y-auto"
-          style={{ scrollbarGutter: 'stable' }}
-        >
-          {tab === 'dream' && <DreamContent />}
-          {tab === 'design' && <DesignContent />}
-          {tab === 'develop' && <DevelopContent />}
-        </div>
-      ))}
+    <div className="w-full h-[100dvh] overflow-hidden" ref={emblaRef}>
+      <div className="flex h-full">
+        {TABS.map((tab) => (
+          <div
+            key={tab}
+            id={`tabpanel-${tab}`}
+            role="tabpanel"
+            aria-labelledby={`tab-${tab}`}
+            ref={refs[tab]}
+            className="h-full min-w-0 shrink-0 grow-0 basis-full overflow-y-auto"
+            style={{ scrollbarGutter: 'stable' }}
+          >
+            {tab === 'dream' && <DreamContent />}
+            {tab === 'design' && <DesignContent />}
+            {tab === 'develop' && <DevelopContent />}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
