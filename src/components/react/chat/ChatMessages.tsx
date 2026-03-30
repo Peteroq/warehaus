@@ -2,8 +2,13 @@
 
 import { useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils/cn';
-import { ChatAvatar } from './ChatAvatar';
 import type { ChatMessage } from '@/lib/chat/types';
+
+const SENDER_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
+  dreamer: { label: 'Dreamer', color: 'text-purple-400', bg: 'bg-purple-500/15' },
+  designer: { label: 'Designer', color: 'text-pink-400', bg: 'bg-pink-500/15' },
+  developer: { label: 'Developer', color: 'text-emerald-400', bg: 'bg-emerald-500/15' },
+};
 
 interface ChatMessagesProps {
   messages: ChatMessage[];
@@ -28,7 +33,7 @@ export function ChatMessages({ messages }: ChatMessagesProps) {
   }
 
   return (
-    <div className="flex flex-1 flex-col gap-4 overflow-y-auto px-4 py-4">
+    <div className="flex flex-1 flex-col gap-4 overflow-y-auto px-4 pt-8 pb-4">
       {messages.map((msg) => (
         <MessageBubble key={msg.id} message={msg} />
       ))}
@@ -39,6 +44,7 @@ export function ChatMessages({ messages }: ChatMessagesProps) {
 
 function MessageBubble({ message }: { message: ChatMessage }) {
   const isUser = message.role === 'user';
+  const sender = message.sender ? SENDER_CONFIG[message.sender] : null;
 
   return (
     <div
@@ -47,18 +53,33 @@ function MessageBubble({ message }: { message: ChatMessage }) {
         isUser ? 'flex-row-reverse' : 'flex-row'
       )}
     >
-      {/* Avatar — only for assistant messages */}
-      {!isUser && <ChatAvatar size="sm" />}
+      {/* Sender avatar dot — only for persona messages */}
+      {!isUser && sender && (
+        <div className={cn('mt-1 h-6 w-6 rounded-full flex items-center justify-center text-[10px] font-bold', sender.bg, sender.color)}>
+          {sender.label[0]}
+        </div>
+      )}
 
-      <div
-        className={cn(
-          'max-w-[85%] rounded-xl px-3.5 py-2.5 text-sm leading-relaxed',
-          isUser
-            ? 'bg-accent/15 text-foreground'
-            : 'bg-surface-elevated text-foreground'
+      <div className={cn('max-w-[85%]', !isUser && sender && 'flex flex-col gap-1')}>
+        {/* Sender label */}
+        {!isUser && sender && (
+          <span className={cn('text-[10px] font-bold uppercase tracking-wider', sender.color)}>
+            {sender.label}
+          </span>
         )}
-      >
-        {message.content}
+
+        <div
+          className={cn(
+            'rounded-xl px-3.5 py-2.5 text-sm leading-relaxed',
+            isUser
+              ? 'bg-accent/15 text-foreground'
+              : sender
+                ? cn(sender.bg, 'text-foreground')
+                : 'bg-surface-elevated text-foreground'
+          )}
+        >
+          {message.content}
+        </div>
       </div>
     </div>
   );

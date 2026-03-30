@@ -2,16 +2,14 @@
 
 import { useEffect, useRef, type ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
-import { LayoutProvider, useLayout, EXPANDED, COLLAPSED } from '@/components/providers/LayoutProvider';
-import { Navbar } from '@/components/layout/Navbar';
-import { RightSidebar } from '@/components/layout/RightSidebar';
-import { MobileBottomBar } from '@/components/layout/MobileBottomBar';
+import { LayoutProvider, useLayout } from '@/components/providers/LayoutProvider';
+import { BottomNav } from '@/components/layout/BottomNav';
+import { MenuOverlay } from '@/components/layout/MenuOverlay';
+import { ChatOverlay } from '@/components/layout/ChatOverlay';
 import { PageTransition } from '@/components/providers/PageTransition';
 
 function AppShellInner({ children }: { children: ReactNode }) {
   const {
-    leftCollapsed,
-    rightCollapsed,
     setScrollProgress,
     setSectionProgress,
     setActiveSection,
@@ -21,14 +19,10 @@ function AppShellInner({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const mainRef = useRef<HTMLDivElement>(null);
 
-  const leftWidth = leftCollapsed ? COLLAPSED : EXPANDED;
-  const rightWidth = rightCollapsed ? COLLAPSED : EXPANDED;
-
-  // Reset scroll state on route change so the sidebar starts fresh
+  // Reset scroll state on route change
   useEffect(() => {
     setSectionProgress(0);
     setScrollProgress(0);
-    // Set activeSection to the first data-section on the new page
     const first = document.querySelector('[data-section]');
     if (first) {
       setActiveSection((first as HTMLElement).dataset.section || 'hero');
@@ -37,8 +31,11 @@ function AppShellInner({ children }: { children: ReactNode }) {
     }
   }, [pathname, setSectionProgress, setScrollProgress, setActiveSection]);
 
+  // Scroll/section observers for non-home pages (home uses per-panel observers)
   useEffect(() => {
-    // Light theme detection
+    // On home page, the tabbed panels handle their own scroll tracking
+    if (pathname === '/') return;
+
     const lightSections = document.querySelectorAll('[data-theme="light"]');
     const lightObserver = new IntersectionObserver(
       (entries) => {
@@ -51,7 +48,6 @@ function AppShellInner({ children }: { children: ReactNode }) {
     );
     lightSections.forEach((el) => lightObserver.observe(el));
 
-    // Active section detection
     const allSections = document.querySelectorAll('[data-section]');
     const sectionObserver = new IntersectionObserver(
       (entries) => {
@@ -71,7 +67,6 @@ function AppShellInner({ children }: { children: ReactNode }) {
     );
     allSections.forEach((el) => sectionObserver.observe(el));
 
-    // Scroll progress tracking (RAF-throttled)
     let rafId = 0;
     const handleScroll = () => {
       if (rafId) return;
@@ -82,10 +77,6 @@ function AppShellInner({ children }: { children: ReactNode }) {
         const progress = docHeight > 0 ? scrollTop / docHeight : 0;
         setScrollProgress(Math.min(Math.max(progress, 0), 1));
 
-        // Compute fractional section index based on how far each section's
-        // top edge has scrolled past the top of the viewport.
-        // sectionProgress=0 when section 0's top is at viewport top,
-        // sectionProgress=1 when section 1's top reaches viewport top, etc.
         const sections = Array.from(document.querySelectorAll('[data-section]'));
         if (sections.length > 0) {
           let fracIndex = 0;
@@ -120,27 +111,19 @@ function AppShellInner({ children }: { children: ReactNode }) {
       className="min-h-screen w-full bg-black text-white font-sans selection:bg-white/20"
       style={
         {
-          '--left-sidebar-w': `${leftWidth}px`,
-          '--right-sidebar-w': `${rightWidth}px`,
+          '--left-sidebar-w': '0px',
+          '--right-sidebar-w': '0px',
         } as React.CSSProperties
       }
     >
-      <Navbar />
-
-      {/* Right sidebar — desktop only */}
-      <div
-        className="hidden md:block fixed top-0 right-0 z-40 h-screen p-5 pl-0 transition-all duration-300 ease-in-out"
-        style={{ width: `${rightWidth}px` }}
-      >
-        <RightSidebar />
-      </div>
-
-      {/* Main content */}
-      <main ref={mainRef} className="w-full">
+      {/* Main content — bottom padding for BottomNav */}
+      <main ref={mainRef} className="w-full pb-16">
         <PageTransition>{children}</PageTransition>
       </main>
 
-      <MobileBottomBar />
+      <BottomNav />
+      <MenuOverlay />
+      <ChatOverlay />
     </div>
   );
 }

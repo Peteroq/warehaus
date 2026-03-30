@@ -37,9 +37,9 @@
   --panel-radius: 12px;
   --panel-padding: 1.25rem;
 
-  /* Dual-sidebar layout vars — set by AppShell inline styles */
-  --left-sidebar-w: 320px;
-  --right-sidebar-w: 320px;
+  /* Layout vars — sidebars removed, kept at 0 for backward compat */
+  --left-sidebar-w: 0px;
+  --right-sidebar-w: 0px;
 }
 
 body {
@@ -99,11 +99,9 @@ canvas.r3f {
   }
 }
 
-/* Mobile bottom bar spacing */
-@media (max-width: 767px) {
-  main {
-    padding-bottom: 72px;
-  }
+/* Bottom nav spacing — applies at all breakpoints now */
+main {
+  padding-bottom: 72px;
 }
 
 /* Page transitions */

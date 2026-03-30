@@ -1,3 +1,5 @@
+import createWithVercelToolbar from '@vercel/toolbar/plugins/next';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   transpilePackages: ['three', '@react-three/fiber', '@react-three/drei'],
@@ -25,4 +27,5 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+const withVercelToolbar = createWithVercelToolbar();
+export default withVercelToolbar(nextConfig);
