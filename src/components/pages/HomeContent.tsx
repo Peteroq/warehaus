@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useMemo } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import { WheelGesturesPlugin } from 'embla-carousel-wheel-gestures';
 import { useLayout, type ActiveTab } from '@/components/providers/LayoutProvider';
@@ -20,13 +20,23 @@ const TAB_INDEX: Record<ActiveTab, number> = {
 export function HomeContent() {
   const { activeTab, setActiveTab } = useLayout();
 
+  // Only use wheel plugin on desktop
+  const plugins = useMemo(() => {
+    if (typeof window !== 'undefined' && !('ontouchstart' in window)) {
+      return [WheelGesturesPlugin({ forceWheelAxis: 'x' })];
+    }
+    return [];
+  }, []);
+
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: false,
     dragFree: false,
-    duration: 20, // Lower = snappier (default 25)
+    duration: 8,          // Very fast snap (native-app feel)
     skipSnaps: false,
-    containScroll: 'trimSnaps',
-  }, [WheelGesturesPlugin({ forceWheelAxis: 'x' })]);
+    containScroll: 'keepSnaps',
+    dragThreshold: 5,     // Responsive — start tracking drag quickly
+    watchDrag: true,
+  }, plugins);
 
   const isProgrammatic = useRef(false);
 
@@ -91,6 +101,37 @@ export function HomeContent() {
     return () => { emblaApi.off('select', onSelect); };
   }, [emblaApi, onSelect]);
 
+  // Prevent vertical scroll on panels while dragging horizontally
+  useEffect(() => {
+    if (!emblaApi) return;
+
+    const panelEls = [dreamRef.current, designRef.current, developRef.current];
+
+    const disableVerticalScroll = () => {
+      panelEls.forEach((el) => {
+        if (el) el.style.overflowY = 'hidden';
+      });
+    };
+
+    const enableVerticalScroll = () => {
+      panelEls.forEach((el) => {
+        if (el) el.style.overflowY = 'auto';
+      });
+    };
+
+    emblaApi.on('pointerDown', disableVerticalScroll);
+    emblaApi.on('settle', enableVerticalScroll);
+    // Also re-enable if drag is released without settling on a new slide
+    emblaApi.on('pointerUp', () => {
+      requestAnimationFrame(enableVerticalScroll);
+    });
+
+    return () => {
+      emblaApi.off('pointerDown', disableVerticalScroll);
+      emblaApi.off('settle', enableVerticalScroll);
+    };
+  }, [emblaApi]);
+
   // Reset vertical scroll to top on tab switch
   useEffect(() => {
     const panel = refs[activeTab]?.current;
@@ -101,8 +142,12 @@ export function HomeContent() {
   }, [activeTab]);
 
   return (
-    <div className="w-full h-[100dvh] overflow-hidden" ref={emblaRef}>
-      <div className="flex h-full">
+    <div
+      className="w-full h-[100dvh] overflow-hidden touch-pan-y"
+      ref={emblaRef}
+      style={{ WebkitOverflowScrolling: 'touch' }}
+    >
+      <div className="flex h-full backface-hidden touch-pan-y">
         {TABS.map((tab) => (
           <div
             key={tab}
@@ -110,8 +155,11 @@ export function HomeContent() {
             role="tabpanel"
             aria-labelledby={`tab-${tab}`}
             ref={refs[tab]}
-            className="h-full min-w-0 shrink-0 grow-0 basis-full overflow-y-auto"
-            style={{ scrollbarGutter: 'stable' }}
+            className="h-full min-w-0 shrink-0 grow-0 basis-full overflow-y-auto overscroll-y-contain"
+            style={{
+              scrollbarGutter: 'stable',
+              WebkitOverflowScrolling: 'touch',
+            }}
           >
             {tab === 'dream' && <DreamContent />}
             {tab === 'design' && <DesignContent />}
