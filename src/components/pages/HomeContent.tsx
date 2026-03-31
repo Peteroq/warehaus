@@ -81,7 +81,22 @@ export function HomeContent() {
     }
   }, [activeTab, emblaApi]);
 
-  // Sync: embla → tab state (from swipe)
+  // Sync: embla → tab state in real-time during drag
+  const lastTabRef = useRef(activeTab);
+  lastTabRef.current = activeTab;
+
+  const onScroll = useCallback(() => {
+    if (!emblaApi || isProgrammatic.current) return;
+    const progress = emblaApi.scrollProgress();
+    const floatIndex = progress * (TABS.length - 1);
+    const nearestIndex = Math.round(floatIndex);
+    const clamped = Math.max(0, Math.min(nearestIndex, TABS.length - 1));
+    const newTab = TABS[clamped];
+    if (newTab && newTab !== lastTabRef.current) {
+      setActiveTab(newTab);
+    }
+  }, [emblaApi, setActiveTab]);
+
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
     if (isProgrammatic.current) {
@@ -90,16 +105,20 @@ export function HomeContent() {
     }
     const index = emblaApi.selectedScrollSnap();
     const newTab = TABS[index];
-    if (newTab && newTab !== activeTab) {
+    if (newTab && newTab !== lastTabRef.current) {
       setActiveTab(newTab);
     }
-  }, [emblaApi, activeTab, setActiveTab]);
+  }, [emblaApi, setActiveTab]);
 
   useEffect(() => {
     if (!emblaApi) return;
+    emblaApi.on('scroll', onScroll);
     emblaApi.on('select', onSelect);
-    return () => { emblaApi.off('select', onSelect); };
-  }, [emblaApi, onSelect]);
+    return () => {
+      emblaApi.off('scroll', onScroll);
+      emblaApi.off('select', onSelect);
+    };
+  }, [emblaApi, onScroll, onSelect]);
 
   // Prevent vertical scroll on panels while dragging horizontally
   useEffect(() => {
@@ -143,11 +162,11 @@ export function HomeContent() {
 
   return (
     <div
-      className="w-full h-[100dvh] overflow-hidden touch-pan-y"
+      className="w-full h-[100dvh] overflow-hidden"
       ref={emblaRef}
-      style={{ WebkitOverflowScrolling: 'touch' }}
+      style={{ touchAction: 'pan-y pinch-zoom', WebkitOverflowScrolling: 'touch' }}
     >
-      <div className="flex h-full backface-hidden touch-pan-y">
+      <div className="flex h-full backface-hidden" style={{ touchAction: 'pan-y pinch-zoom' }}>
         {TABS.map((tab) => (
           <div
             key={tab}
