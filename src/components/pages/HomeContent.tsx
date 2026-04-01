@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useCallback, useMemo } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import { WheelGesturesPlugin } from 'embla-carousel-wheel-gestures';
 import { useLayout, type ActiveTab } from '@/components/providers/LayoutProvider';
@@ -21,22 +21,15 @@ export function HomeContent() {
   const { activeTab, setActiveTab } = useLayout();
 
   // Only use wheel plugin on desktop
-  const plugins = useMemo(() => {
-    if (typeof window !== 'undefined' && !('ontouchstart' in window)) {
-      return [WheelGesturesPlugin({ forceWheelAxis: 'x' })];
-    }
-    return [];
-  }, []);
-
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: false,
     dragFree: false,
-    duration: 8,          // Very fast snap (native-app feel)
+    duration: 18,
     skipSnaps: false,
     containScroll: 'keepSnaps',
-    dragThreshold: 5,     // Responsive — start tracking drag quickly
+    dragThreshold: 3,
     watchDrag: true,
-  }, plugins);
+  }, [WheelGesturesPlugin({ wheelDraggingClass: '', skipSnaps: false })]);
 
   const isProgrammatic = useRef(false);
 
@@ -164,9 +157,8 @@ export function HomeContent() {
     <div
       className="w-full h-[100dvh] overflow-hidden"
       ref={emblaRef}
-      style={{ touchAction: 'pan-y pinch-zoom', WebkitOverflowScrolling: 'touch' }}
     >
-      <div className="flex h-full backface-hidden" style={{ touchAction: 'pan-y pinch-zoom' }}>
+      <div className="flex h-full backface-hidden">
         {TABS.map((tab) => (
           <div
             key={tab}
