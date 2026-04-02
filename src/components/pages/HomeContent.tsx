@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useRef, useCallback } from 'react';
+import useEmblaCarousel from 'embla-carousel-react';
+import { WheelGesturesPlugin } from 'embla-carousel-wheel-gestures';
 import { useLayout, type ActiveTab } from '@/components/providers/LayoutProvider';
 import { useScrollObserver } from '@/hooks/useScrollObserver';
 import { DreamContent } from '@/components/pages/DreamContent';
@@ -17,6 +19,7 @@ const TAB_INDEX: Record<ActiveTab, number> = {
 
 export function HomeContent() {
   const { activeTab, setActiveTab } = useLayout();
+  const isExternalChange = useRef(false);
 
   const dreamRef = useRef<HTMLDivElement>(null);
   const designRef = useRef<HTMLDivElement>(null);
@@ -28,10 +31,86 @@ export function HomeContent() {
     develop: developRef,
   };
 
+  // Embla carousel — smooth drag with velocity-based snapping
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    {
+      loop: false,
+      dragFree: false,
+      duration: 20,
+      skipSnaps: false,
+      containScroll: 'keepSnaps',
+      dragThreshold: 3,
+      startIndex: TAB_INDEX[activeTab],
+    },
+    [WheelGesturesPlugin({ wheelDraggingClass: '' })]
+  );
+
   // Scroll observer — only active tab writes to context
   useScrollObserver(dreamRef, activeTab === 'dream');
   useScrollObserver(designRef, activeTab === 'design');
   useScrollObserver(developRef, activeTab === 'develop');
+
+  // Sync Embla → tab state (fires during drag for real-time updates)
+  useEffect(() => {
+    if (!emblaApi) return;
+
+    const onSelect = () => {
+      const index = emblaApi.selectedScrollSnap();
+      const tab = TABS[index];
+      if (tab && tab !== activeTab) {
+        isExternalChange.current = true;
+        setActiveTab(tab);
+      }
+    };
+
+    // 'select' fires when the snap target changes (even mid-drag)
+    emblaApi.on('select', onSelect);
+    return () => {
+      emblaApi.off('select', onSelect);
+    };
+  }, [emblaApi, activeTab, setActiveTab]);
+
+  // Sync tab state → Embla (when tab changes from BottomNav clicks)
+  useEffect(() => {
+    if (!emblaApi) return;
+    if (isExternalChange.current) {
+      isExternalChange.current = false;
+      return;
+    }
+    const targetIndex = TAB_INDEX[activeTab];
+    if (emblaApi.selectedScrollSnap() !== targetIndex) {
+      emblaApi.scrollTo(targetIndex);
+    }
+  }, [emblaApi, activeTab]);
+
+  // Disable vertical scroll on panels while dragging horizontally
+  useEffect(() => {
+    if (!emblaApi) return;
+
+    const panels = [dreamRef, designRef, developRef];
+
+    const lockVerticalScroll = () => {
+      panels.forEach((ref) => {
+        if (ref.current) ref.current.style.overflowY = 'hidden';
+      });
+    };
+
+    const unlockVerticalScroll = () => {
+      panels.forEach((ref) => {
+        if (ref.current) ref.current.style.overflowY = 'auto';
+      });
+    };
+
+    emblaApi.on('pointerDown', lockVerticalScroll);
+    emblaApi.on('settle', unlockVerticalScroll);
+    emblaApi.on('pointerUp', unlockVerticalScroll);
+
+    return () => {
+      emblaApi.off('pointerDown', lockVerticalScroll);
+      emblaApi.off('settle', unlockVerticalScroll);
+      emblaApi.off('pointerUp', unlockVerticalScroll);
+    };
+  }, [emblaApi]);
 
   // Read ?tab= param on mount
   useEffect(() => {
@@ -58,72 +137,26 @@ export function HomeContent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
-  // Swipe to switch tabs on mobile
-  const swipeRef = useRef<HTMLDivElement>(null);
-  const touchStart = useRef<{ x: number; y: number } | null>(null);
-  const SWIPE_THRESHOLD = 50;
-
-  const goToTab = useCallback((direction: 1 | -1) => {
-    const currentIndex = TAB_INDEX[activeTab];
-    const nextIndex = currentIndex + direction;
-    if (nextIndex >= 0 && nextIndex < TABS.length) {
-      setActiveTab(TABS[nextIndex]);
-    }
-  }, [activeTab, setActiveTab]);
-
-  useEffect(() => {
-    const el = swipeRef.current;
-    if (!el) return;
-
-    const onTouchStart = (e: TouchEvent) => {
-      touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-    };
-
-    const onTouchEnd = (e: TouchEvent) => {
-      if (!touchStart.current) return;
-      const dx = e.changedTouches[0].clientX - touchStart.current.x;
-      const dy = e.changedTouches[0].clientY - touchStart.current.y;
-      touchStart.current = null;
-
-      // Only trigger if horizontal swipe is dominant
-      if (Math.abs(dx) > SWIPE_THRESHOLD && Math.abs(dx) > Math.abs(dy)) {
-        goToTab(dx < 0 ? 1 : -1);
-      }
-    };
-
-    el.addEventListener('touchstart', onTouchStart, { passive: true });
-    el.addEventListener('touchend', onTouchEnd, { passive: true });
-    return () => {
-      el.removeEventListener('touchstart', onTouchStart);
-      el.removeEventListener('touchend', onTouchEnd);
-    };
-  }, [goToTab]);
-
-  const translateX = -(TAB_INDEX[activeTab] * 100);
-
   return (
-    <div ref={swipeRef} className="w-full h-[100dvh] overflow-hidden">
-      <div
-        className="flex h-full transition-transform duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
-        style={{
-          transform: `translateX(${translateX}vw)`,
-        }}
-      >
-        {TABS.map((tab) => (
-          <div
-            key={tab}
-            id={`tabpanel-${tab}`}
-            role="tabpanel"
-            aria-labelledby={`tab-${tab}`}
-            ref={refs[tab]}
-            className="h-full overflow-y-auto shrink-0"
-            style={{ width: '100vw', scrollbarGutter: 'stable' }}
-          >
-            {tab === 'dream' && <DreamContent />}
-            {tab === 'design' && <DesignContent />}
-            {tab === 'develop' && <DevelopContent />}
-          </div>
-        ))}
+    <div className="w-full h-[100dvh] overflow-hidden">
+      <div ref={emblaRef} className="h-full overflow-hidden">
+        <div className="flex h-full">
+          {TABS.map((tab) => (
+            <div
+              key={tab}
+              id={`tabpanel-${tab}`}
+              role="tabpanel"
+              aria-labelledby={`tab-${tab}`}
+              ref={refs[tab]}
+              className="h-full overflow-y-auto shrink-0 basis-full min-w-0"
+              style={{ scrollbarGutter: 'stable' }}
+            >
+              {tab === 'dream' && <DreamContent />}
+              {tab === 'design' && <DesignContent />}
+              {tab === 'develop' && <DevelopContent />}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
