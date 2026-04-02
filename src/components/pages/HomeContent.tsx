@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useRef, useCallback } from 'react';
+import useEmblaCarousel from 'embla-carousel-react';
+import { WheelGesturesPlugin } from 'embla-carousel-wheel-gestures';
 import { useLayout, type ActiveTab } from '@/components/providers/LayoutProvider';
 import { useScrollObserver } from '@/hooks/useScrollObserver';
 import { DreamContent } from '@/components/pages/DreamContent';
@@ -17,6 +19,19 @@ export function HomeContent() {
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const isProgScrolling = useRef(false);
+
+  // Only use wheel plugin on desktop
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    loop: false,
+    dragFree: false,
+    duration: 18,
+    skipSnaps: false,
+    containScroll: 'keepSnaps',
+    dragThreshold: 3,
+    watchDrag: true,
+  }, [WheelGesturesPlugin({ wheelDraggingClass: '', skipSnaps: false })]);
+
+  const isProgrammatic = useRef(false);
 
   const dreamRef = useRef<HTMLDivElement>(null);
   const designRef = useRef<HTMLDivElement>(null);
