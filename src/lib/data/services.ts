@@ -4,8 +4,8 @@ export const DREAM: ServicePageData = {
   realm: 'The Navigator Realm',
   mentor: 'Vaelen',
   sigil: 'Compass',
-  color: '#6366f1',
-  colorClass: 'text-indigo-400',
+  color: 'var(--dream-primary)',
+  colorClass: 'text-dream',
   gradientClass: 'from-indigo-600 via-indigo-500 to-violet-500',
   loreBlurb:
     'Before the first line is drawn, there must be vision. Vaelen, the Navigator, charts the unseen waters of possibility. In this realm, raw ambition takes shape — ideas become strategies, chaos becomes clarity, and the path forward reveals itself through deep research and creative direction. Every great creation begins as a dream.',
@@ -33,8 +33,8 @@ export const DESIGN: ServicePageData = {
   realm: 'The Forge',
   mentor: 'Korr',
   sigil: 'Hammer',
-  color: '#f97316',
-  colorClass: 'text-orange-400',
+  color: 'var(--design-primary)',
+  colorClass: 'text-design',
   gradientClass: 'from-orange-600 via-orange-500 to-amber-500',
   loreBlurb:
     'In the heart of the Forge, vision becomes form. Korr, the Shaper, bends light and pixel with equal mastery — crafting interfaces that feel alive, design systems that scale without breaking, and brand identities that burn themselves into memory. Here, beauty is not decoration; it is precision made visible.',
@@ -62,9 +62,9 @@ export const DEVELOP: ServicePageData = {
   realm: 'The High Tower',
   mentor: 'Cirion & The Council',
   sigil: 'Tower',
-  color: '#eab308',
-  colorClass: 'text-yellow-400',
-  gradientClass: 'from-yellow-600 via-yellow-500 to-amber-400',
+  color: 'var(--develop-primary)',
+  colorClass: 'text-develop',
+  gradientClass: 'from-emerald-600 via-emerald-500 to-green-400',
   loreBlurb:
     'The High Tower is where the impossible becomes inevitable. Cirion and the Council of Architects transform blueprints into living systems — websites that breathe, applications that think, and integrations that flow like water through stone. Code is not just written here; it is forged with intent and tempered by performance.',
   skills: [

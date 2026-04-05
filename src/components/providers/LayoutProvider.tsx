@@ -4,12 +4,15 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
 } from 'react';
 
 export type ActiveTab = 'dream' | 'design' | 'develop';
+export type Theme = 'dark' | 'light';
+export type ThemeMode = 'dark' | 'light' | 'auto';
 
 interface LayoutContextValue {
   scrollProgress: number;
@@ -26,6 +29,10 @@ interface LayoutContextValue {
   toggleMenu: () => void;
   chatOverlayOpen: boolean;
   toggleChatOverlay: () => void;
+  theme: Theme;
+  toggleTheme: () => void;
+  themeMode: ThemeMode;
+  setThemeMode: (mode: ThemeMode) => void;
 }
 
 const LayoutContext = createContext<LayoutContextValue | null>(null);
@@ -38,9 +45,58 @@ export function LayoutProvider({ children }: { children: ReactNode }) {
   const [activeTab, setActiveTab] = useState<ActiveTab>('dream');
   const [menuOpen, setMenuOpen] = useState(false);
   const [chatOverlayOpen, setChatOverlayOpen] = useState(false);
+  // Initialize from localStorage + system preference synchronously on the
+  // client so the first render matches the `.light` class the blocking
+  // script in <head> already applied. Prevents a theme flash during the
+  // loading screen / initial hydration.
+  const [themeMode, setThemeMode] = useState<ThemeMode>(() => {
+    if (typeof window === 'undefined') return 'auto';
+    const saved = window.localStorage.getItem('warehaus-theme');
+    if (saved === 'light' || saved === 'dark' || saved === 'auto') return saved;
+    return 'auto';
+  });
+  const [systemPrefersDark, setSystemPrefersDark] = useState(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return true;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
+
+  // Resolved theme: in auto mode, follow system preference
+  const theme: Theme =
+    themeMode === 'auto' ? (systemPrefersDark ? 'dark' : 'light') : themeMode;
 
   const toggleMenu = useCallback(() => setMenuOpen((p) => !p), []);
   const toggleChatOverlay = useCallback(() => setChatOverlayOpen((p) => !p), []);
+  const toggleTheme = useCallback(
+    () => setThemeMode((p) => (p === 'light' ? 'dark' : 'light')),
+    [],
+  );
+
+  // Track system color-scheme preference (only relevant in auto mode,
+  // but keeping the listener always-on keeps state fresh when the user
+  // switches into auto).
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    setSystemPrefersDark(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setSystemPrefersDark(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+
+  // Sync resolved theme class on <html> and persist the mode to localStorage
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === 'light') {
+      root.classList.add('light');
+    } else {
+      root.classList.remove('light');
+    }
+  }, [theme]);
+
+  useEffect(() => {
+    localStorage.setItem('warehaus-theme', themeMode);
+  }, [themeMode]);
+
 
   const value = useMemo<LayoutContextValue>(
     () => ({
@@ -58,6 +114,10 @@ export function LayoutProvider({ children }: { children: ReactNode }) {
       toggleMenu,
       chatOverlayOpen,
       toggleChatOverlay,
+      theme,
+      toggleTheme,
+      themeMode,
+      setThemeMode,
     }),
     [
       scrollProgress,
@@ -69,6 +129,9 @@ export function LayoutProvider({ children }: { children: ReactNode }) {
       toggleMenu,
       chatOverlayOpen,
       toggleChatOverlay,
+      theme,
+      toggleTheme,
+      themeMode,
     ],
   );
 

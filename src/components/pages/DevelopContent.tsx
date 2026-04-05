@@ -64,55 +64,55 @@ export function DevelopContent() {
       >
         {/* Golden tower background */}
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_#422006_0%,_#1a1000_40%,_#050505_80%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_#052e16_0%,_#0a1a0f_40%,_#050505_80%)]" />
           {/* Circuit-like grid */}
           <div className="absolute inset-0 opacity-20" style={{
-            backgroundImage: 'linear-gradient(rgba(234,179,8,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(234,179,8,0.15) 1px, transparent 1px)',
+            backgroundImage: 'linear-gradient(rgba(16,185,129,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(16,185,129,0.15) 1px, transparent 1px)',
             backgroundSize: '60px 60px',
           }} />
           <div className="absolute inset-0 opacity-10" style={{
-            backgroundImage: 'linear-gradient(rgba(234,179,8,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(234,179,8,0.1) 1px, transparent 1px)',
+            backgroundImage: 'linear-gradient(rgba(16,185,129,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(16,185,129,0.1) 1px, transparent 1px)',
             backgroundSize: '20px 20px',
           }} />
           {/* Upward glow — tower base */}
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[400px] h-[600px] bg-gradient-to-t from-yellow-600/8 to-transparent" />
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[400px] h-[600px] bg-gradient-to-t from-emerald-600/8 to-transparent" />
         </div>
 
         {/* Tower sigil — vertical structure */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div className="relative w-[300px] h-[600px] md:w-[400px] md:h-[700px]">
-            <div className="absolute inset-0 rounded-sm bg-yellow-500/3 blur-[60px]" />
+            <div className="absolute inset-0 rounded-sm bg-emerald-500/3 blur-[60px]" />
             {/* Tower structure — vertical lines */}
-            <div className="absolute left-[20%] top-0 w-px h-full bg-gradient-to-b from-transparent via-yellow-400/12 to-yellow-300/8" />
-            <div className="absolute left-[40%] top-0 w-px h-full bg-gradient-to-b from-transparent via-yellow-400/10 to-yellow-300/6" />
-            <div className="absolute left-[60%] top-0 w-px h-full bg-gradient-to-b from-transparent via-yellow-400/10 to-yellow-300/6" />
-            <div className="absolute left-[80%] top-0 w-px h-full bg-gradient-to-b from-transparent via-yellow-400/12 to-yellow-300/8" />
+            <div className="absolute left-[20%] top-0 w-px h-full bg-gradient-to-b from-transparent via-emerald-400/12 to-emerald-300/8" />
+            <div className="absolute left-[40%] top-0 w-px h-full bg-gradient-to-b from-transparent via-emerald-400/10 to-emerald-300/6" />
+            <div className="absolute left-[60%] top-0 w-px h-full bg-gradient-to-b from-transparent via-emerald-400/10 to-emerald-300/6" />
+            <div className="absolute left-[80%] top-0 w-px h-full bg-gradient-to-b from-transparent via-emerald-400/12 to-emerald-300/8" />
             {/* Horizontal floors */}
-            <div className="absolute top-[15%] left-0 w-full h-px bg-yellow-400/8" />
-            <div className="absolute top-[30%] left-[10%] w-[80%] h-px bg-yellow-400/10" />
-            <div className="absolute top-[45%] left-[15%] w-[70%] h-px bg-yellow-400/12" />
-            <div className="absolute top-[60%] left-[10%] w-[80%] h-px bg-yellow-400/10" />
-            <div className="absolute top-[75%] left-[5%] w-[90%] h-px bg-yellow-400/8" />
-            <div className="absolute top-[90%] left-0 w-full h-px bg-yellow-400/6" />
+            <div className="absolute top-[15%] left-0 w-full h-px bg-emerald-400/8" />
+            <div className="absolute top-[30%] left-[10%] w-[80%] h-px bg-emerald-400/10" />
+            <div className="absolute top-[45%] left-[15%] w-[70%] h-px bg-emerald-400/12" />
+            <div className="absolute top-[60%] left-[10%] w-[80%] h-px bg-emerald-400/10" />
+            <div className="absolute top-[75%] left-[5%] w-[90%] h-px bg-emerald-400/8" />
+            <div className="absolute top-[90%] left-0 w-full h-px bg-emerald-400/6" />
             {/* Pinnacle glow */}
-            <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-yellow-300/50 animate-pulse shadow-[0_0_20px_rgba(234,179,8,0.4)]" />
-            <div className="absolute -top-10 left-1/2 -translate-x-px w-px h-10 bg-gradient-to-t from-yellow-300/30 to-transparent" />
+            <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-emerald-300/50 animate-pulse shadow-[0_0_20px_rgba(16,185,129,0.4)]" />
+            <div className="absolute -top-10 left-1/2 -translate-x-px w-px h-10 bg-gradient-to-t from-emerald-300/30 to-transparent" />
             {/* Node points at intersections */}
-            <div className="absolute top-[30%] left-[40%] w-1.5 h-1.5 rounded-full bg-yellow-400/30 animate-pulse [animation-delay:0.3s]" />
-            <div className="absolute top-[45%] left-[60%] w-1.5 h-1.5 rounded-full bg-yellow-300/25 animate-pulse [animation-delay:0.8s]" />
-            <div className="absolute top-[60%] left-[40%] w-1 h-1 rounded-full bg-yellow-400/20 animate-pulse [animation-delay:1.2s]" />
-            <div className="absolute top-[15%] left-[80%] w-1 h-1 rounded-full bg-amber-300/30 animate-pulse [animation-delay:0.5s]" />
-            <div className="absolute top-[75%] left-[20%] w-1 h-1 rounded-full bg-yellow-300/20 animate-pulse [animation-delay:1.5s]" />
+            <div className="absolute top-[30%] left-[40%] w-1.5 h-1.5 rounded-full bg-emerald-400/30 animate-pulse [animation-delay:0.3s]" />
+            <div className="absolute top-[45%] left-[60%] w-1.5 h-1.5 rounded-full bg-emerald-300/25 animate-pulse [animation-delay:0.8s]" />
+            <div className="absolute top-[60%] left-[40%] w-1 h-1 rounded-full bg-emerald-400/20 animate-pulse [animation-delay:1.2s]" />
+            <div className="absolute top-[15%] left-[80%] w-1 h-1 rounded-full bg-green-300/30 animate-pulse [animation-delay:0.5s]" />
+            <div className="absolute top-[75%] left-[20%] w-1 h-1 rounded-full bg-emerald-300/20 animate-pulse [animation-delay:1.5s]" />
           </div>
         </div>
 
         {/* Text overlay */}
         <div className="relative z-10 text-center" style={SIDEBAR_PAD}>
           <div className="flex items-center justify-center gap-3 mb-8">
-            <div className="w-8 h-8 rounded-sm bg-yellow-500/20 border border-yellow-400/30 flex items-center justify-center">
-              <Building2 className="w-4 h-4 text-yellow-400" />
+            <div className="w-8 h-8 rounded-sm bg-emerald-500/20 border border-emerald-400/30 flex items-center justify-center">
+              <Building2 className="w-4 h-4 text-emerald-400" />
             </div>
-            <span className="text-yellow-400 text-xs font-bold tracking-[0.3em] uppercase">
+            <span className="text-emerald-400 text-xs font-bold tracking-[0.3em] uppercase">
               The High Tower
             </span>
           </div>
@@ -132,7 +132,7 @@ export function DevelopContent() {
         <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-10">
           <button
             onClick={() => document.querySelector('[data-section="blueprint"]')?.scrollIntoView({ behavior: 'smooth' })}
-            className="flex flex-col items-center gap-2 text-yellow-300/40 hover:text-yellow-300/80 transition-colors"
+            className="flex flex-col items-center gap-2 text-emerald-300/40 hover:text-emerald-300/80 transition-colors"
           >
             <span className="text-[10px] tracking-[0.3em] uppercase">Ascend the Tower</span>
             <ChevronDown className="w-4 h-4 animate-bounce" />
@@ -145,14 +145,14 @@ export function DevelopContent() {
         data-section="blueprint"
         className="relative w-full h-screen min-h-[700px] flex items-center justify-center overflow-hidden"
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-[#050505] via-[#0a0800] to-[#050505]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#050505] via-[#0a120d] to-[#050505]" />
         {/* Faint blueprint grid */}
         <div className="absolute inset-0 opacity-[0.04]" style={{
-          backgroundImage: 'linear-gradient(rgba(234,179,8,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(234,179,8,0.2) 1px, transparent 1px)',
+          backgroundImage: 'linear-gradient(rgba(16,185,129,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(16,185,129,0.2) 1px, transparent 1px)',
           backgroundSize: '40px 40px',
         }} />
-        <div className="absolute top-1/3 left-1/4 w-[500px] h-[400px] rounded-full bg-yellow-600/3 blur-[120px]" />
-        <div className="absolute bottom-1/4 right-1/3 w-[400px] h-[400px] rounded-full bg-amber-600/2 blur-[100px]" />
+        <div className="absolute top-1/3 left-1/4 w-[500px] h-[400px] rounded-full bg-emerald-600/3 blur-[120px]" />
+        <div className="absolute bottom-1/4 right-1/3 w-[400px] h-[400px] rounded-full bg-green-600/2 blur-[100px]" />
 
         <div
           ref={blueprintRef}
@@ -161,7 +161,7 @@ export function DevelopContent() {
           }`}
           style={SIDEBAR_PAD}
         >
-          <p className="text-yellow-400/30 text-[10px] font-bold tracking-[0.3em] uppercase mb-8">
+          <p className="text-emerald-400/30 text-[10px] font-bold tracking-[0.3em] uppercase mb-8">
             The gap
           </p>
           <h2 className="font-display text-3xl md:text-5xl lg:text-6xl font-bold text-white/70 leading-tight max-w-2xl mx-auto mb-6">
@@ -182,10 +182,10 @@ export function DevelopContent() {
       >
         <div className="absolute inset-0 bg-[#050505]" />
         <div className="absolute inset-0 opacity-[0.05]" style={{
-          backgroundImage: 'linear-gradient(rgba(234,179,8,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(234,179,8,0.15) 1px, transparent 1px)',
+          backgroundImage: 'linear-gradient(rgba(16,185,129,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(16,185,129,0.15) 1px, transparent 1px)',
           backgroundSize: '80px 80px',
         }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-yellow-600/4 blur-[100px]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-emerald-600/4 blur-[100px]" />
 
         <div
           ref={guideRef}
@@ -197,44 +197,44 @@ export function DevelopContent() {
           <div className="flex flex-col items-center">
             {/* Cirion portrait — tower/architectural visual */}
             <div className="relative w-[260px] h-[340px] md:w-[320px] md:h-[420px] mb-10">
-              <div className="absolute inset-0 rounded-sm bg-gradient-to-b from-yellow-950/50 via-[#0a0800] to-yellow-950/25 border border-yellow-500/10 overflow-hidden">
+              <div className="absolute inset-0 rounded-sm bg-gradient-to-b from-emerald-950/50 via-[#0a120d] to-emerald-950/25 border border-emerald-500/10 overflow-hidden">
                 <div className="absolute inset-0 flex items-center justify-center">
                   {/* Tower/spire visual */}
                   <div className="relative w-32 h-48 md:w-40 md:h-56">
                     {/* Vertical tower lines */}
-                    <div className="absolute left-[25%] top-0 w-px h-full bg-yellow-400/20" />
-                    <div className="absolute left-[50%] top-0 w-px h-full bg-yellow-400/15" />
-                    <div className="absolute left-[75%] top-0 w-px h-full bg-yellow-400/20" />
+                    <div className="absolute left-[25%] top-0 w-px h-full bg-emerald-400/20" />
+                    <div className="absolute left-[50%] top-0 w-px h-full bg-emerald-400/15" />
+                    <div className="absolute left-[75%] top-0 w-px h-full bg-emerald-400/20" />
                     {/* Horizontal spans */}
-                    <div className="absolute top-[20%] left-[15%] w-[70%] h-px bg-yellow-400/15" />
-                    <div className="absolute top-[40%] left-[10%] w-[80%] h-px bg-yellow-400/12" />
-                    <div className="absolute top-[60%] left-[5%] w-[90%] h-px bg-yellow-400/10" />
-                    <div className="absolute top-[80%] left-0 w-full h-px bg-yellow-400/8" />
+                    <div className="absolute top-[20%] left-[15%] w-[70%] h-px bg-emerald-400/15" />
+                    <div className="absolute top-[40%] left-[10%] w-[80%] h-px bg-emerald-400/12" />
+                    <div className="absolute top-[60%] left-[5%] w-[90%] h-px bg-emerald-400/10" />
+                    <div className="absolute top-[80%] left-0 w-full h-px bg-emerald-400/8" />
                     {/* Pinnacle */}
-                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-yellow-300/60 animate-pulse shadow-[0_0_12px_rgba(234,179,8,0.3)]" />
+                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-emerald-300/60 animate-pulse shadow-[0_0_12px_rgba(16,185,129,0.3)]" />
                     {/* Node lights */}
-                    <div className="absolute top-[20%] left-[25%] w-1.5 h-1.5 rounded-full bg-yellow-400/30 animate-pulse [animation-delay:0.3s]" />
-                    <div className="absolute top-[40%] left-[75%] w-1 h-1 rounded-full bg-yellow-300/25 animate-pulse [animation-delay:0.8s]" />
-                    <div className="absolute top-[60%] left-[50%] w-1.5 h-1.5 rounded-full bg-amber-400/20 animate-pulse [animation-delay:1.2s]" />
+                    <div className="absolute top-[20%] left-[25%] w-1.5 h-1.5 rounded-full bg-emerald-400/30 animate-pulse [animation-delay:0.3s]" />
+                    <div className="absolute top-[40%] left-[75%] w-1 h-1 rounded-full bg-emerald-300/25 animate-pulse [animation-delay:0.8s]" />
+                    <div className="absolute top-[60%] left-[50%] w-1.5 h-1.5 rounded-full bg-green-400/20 animate-pulse [animation-delay:1.2s]" />
                   </div>
                 </div>
-                <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-yellow-950/50 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-emerald-950/50 to-transparent" />
                 {/* Ambient particles */}
-                <div className="absolute top-[12%] left-[18%] w-1 h-1 rounded-full bg-yellow-300/15 animate-pulse [animation-delay:0.5s]" />
-                <div className="absolute top-[25%] right-[15%] w-0.5 h-0.5 rounded-full bg-amber-300/25 animate-pulse [animation-delay:1s]" />
-                <div className="absolute bottom-[38%] left-[22%] w-0.5 h-0.5 rounded-full bg-yellow-200/15 animate-pulse [animation-delay:0.8s]" />
-                <div className="absolute top-[42%] right-[12%] w-1 h-1 rounded-full bg-amber-400/20 animate-pulse [animation-delay:1.5s]" />
+                <div className="absolute top-[12%] left-[18%] w-1 h-1 rounded-full bg-emerald-300/15 animate-pulse [animation-delay:0.5s]" />
+                <div className="absolute top-[25%] right-[15%] w-0.5 h-0.5 rounded-full bg-green-300/25 animate-pulse [animation-delay:1s]" />
+                <div className="absolute bottom-[38%] left-[22%] w-0.5 h-0.5 rounded-full bg-emerald-200/15 animate-pulse [animation-delay:0.8s]" />
+                <div className="absolute top-[42%] right-[12%] w-1 h-1 rounded-full bg-green-400/20 animate-pulse [animation-delay:1.5s]" />
               </div>
-              <div className="absolute -inset-8 rounded-sm bg-yellow-500/3 blur-2xl -z-10" />
+              <div className="absolute -inset-8 rounded-sm bg-emerald-500/3 blur-2xl -z-10" />
             </div>
 
-            <p className="text-yellow-400/30 text-[10px] tracking-[0.3em] uppercase mb-4">
+            <p className="text-emerald-400/30 text-[10px] tracking-[0.3em] uppercase mb-4">
               The master architects
             </p>
             <h2 className="font-display text-3xl md:text-5xl font-bold text-white text-center mb-3">
               Cirion & The Council
             </h2>
-            <p className="text-yellow-300/30 text-sm italic max-w-sm text-center">
+            <p className="text-emerald-300/30 text-sm italic max-w-sm text-center">
               The Council of Architects. They transform blueprints into living systems — code forged with intent and tempered by performance.
             </p>
           </div>
@@ -247,29 +247,29 @@ export function DevelopContent() {
         className="relative w-full h-screen min-h-[700px] flex items-center justify-center overflow-hidden"
       >
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_#1a1200_0%,_#0a0800_50%,_#050505_100%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_#0a1a0f_0%,_#0a120d_50%,_#050505_100%)]" />
           {/* Data flow lines — code running through the tower */}
           <svg className="absolute inset-0 w-full h-full opacity-[0.06]" xmlns="http://www.w3.org/2000/svg">
             {/* Vertical data streams */}
-            <line x1="20%" y1="0%" x2="20%" y2="100%" stroke="#eab308" strokeWidth="0.5" />
-            <line x1="40%" y1="0%" x2="40%" y2="100%" stroke="#eab308" strokeWidth="0.5" />
-            <line x1="60%" y1="0%" x2="60%" y2="100%" stroke="#eab308" strokeWidth="0.5" />
-            <line x1="80%" y1="0%" x2="80%" y2="100%" stroke="#eab308" strokeWidth="0.5" />
+            <line x1="20%" y1="0%" x2="20%" y2="100%" stroke="#10b981" strokeWidth="0.5" />
+            <line x1="40%" y1="0%" x2="40%" y2="100%" stroke="#10b981" strokeWidth="0.5" />
+            <line x1="60%" y1="0%" x2="60%" y2="100%" stroke="#10b981" strokeWidth="0.5" />
+            <line x1="80%" y1="0%" x2="80%" y2="100%" stroke="#10b981" strokeWidth="0.5" />
             {/* Horizontal connections */}
-            <line x1="20%" y1="25%" x2="40%" y2="25%" stroke="#eab308" strokeWidth="0.5" />
-            <line x1="40%" y1="25%" x2="60%" y2="40%" stroke="#eab308" strokeWidth="0.5" />
-            <line x1="60%" y1="40%" x2="80%" y2="35%" stroke="#eab308" strokeWidth="0.5" />
-            <line x1="20%" y1="60%" x2="40%" y2="55%" stroke="#eab308" strokeWidth="0.5" />
-            <line x1="60%" y1="70%" x2="80%" y2="65%" stroke="#eab308" strokeWidth="0.5" />
+            <line x1="20%" y1="25%" x2="40%" y2="25%" stroke="#10b981" strokeWidth="0.5" />
+            <line x1="40%" y1="25%" x2="60%" y2="40%" stroke="#10b981" strokeWidth="0.5" />
+            <line x1="60%" y1="40%" x2="80%" y2="35%" stroke="#10b981" strokeWidth="0.5" />
+            <line x1="20%" y1="60%" x2="40%" y2="55%" stroke="#10b981" strokeWidth="0.5" />
+            <line x1="60%" y1="70%" x2="80%" y2="65%" stroke="#10b981" strokeWidth="0.5" />
             {/* Node points */}
-            <circle cx="20%" cy="25%" r="2.5" fill="#eab308" opacity="0.4" />
-            <circle cx="40%" cy="25%" r="2" fill="#fbbf24" opacity="0.3" />
-            <circle cx="60%" cy="40%" r="3" fill="#eab308" opacity="0.5" />
-            <circle cx="80%" cy="35%" r="2" fill="#fbbf24" opacity="0.4" />
-            <circle cx="20%" cy="60%" r="2" fill="#eab308" opacity="0.3" />
-            <circle cx="40%" cy="55%" r="2.5" fill="#fbbf24" opacity="0.4" />
-            <circle cx="60%" cy="70%" r="2" fill="#eab308" opacity="0.3" />
-            <circle cx="80%" cy="65%" r="3" fill="#fbbf24" opacity="0.5" />
+            <circle cx="20%" cy="25%" r="2.5" fill="#10b981" opacity="0.4" />
+            <circle cx="40%" cy="25%" r="2" fill="#34d399" opacity="0.3" />
+            <circle cx="60%" cy="40%" r="3" fill="#10b981" opacity="0.5" />
+            <circle cx="80%" cy="35%" r="2" fill="#34d399" opacity="0.4" />
+            <circle cx="20%" cy="60%" r="2" fill="#10b981" opacity="0.3" />
+            <circle cx="40%" cy="55%" r="2.5" fill="#34d399" opacity="0.4" />
+            <circle cx="60%" cy="70%" r="2" fill="#10b981" opacity="0.3" />
+            <circle cx="80%" cy="65%" r="3" fill="#34d399" opacity="0.5" />
           </svg>
         </div>
 
@@ -277,21 +277,21 @@ export function DevelopContent() {
         <div className="absolute inset-0 flex items-end justify-center pointer-events-none pb-20">
           <div className="relative w-[500px] h-[500px] md:w-[700px] md:h-[600px]">
             {/* Ascending horizontal platforms */}
-            <div className="absolute bottom-0 left-[5%] w-[90%] h-px bg-yellow-400/15" />
-            <div className="absolute bottom-[15%] left-[10%] w-[80%] h-px bg-yellow-400/12" />
-            <div className="absolute bottom-[30%] left-[15%] w-[70%] h-px bg-yellow-400/10" />
-            <div className="absolute bottom-[45%] left-[20%] w-[60%] h-px bg-yellow-400/10" />
-            <div className="absolute bottom-[60%] left-[25%] w-[50%] h-px bg-yellow-400/8" />
-            <div className="absolute bottom-[75%] left-[30%] w-[40%] h-px bg-yellow-400/6" />
-            <div className="absolute bottom-[90%] left-[38%] w-[24%] h-px bg-yellow-400/5" />
+            <div className="absolute bottom-0 left-[5%] w-[90%] h-px bg-emerald-400/15" />
+            <div className="absolute bottom-[15%] left-[10%] w-[80%] h-px bg-emerald-400/12" />
+            <div className="absolute bottom-[30%] left-[15%] w-[70%] h-px bg-emerald-400/10" />
+            <div className="absolute bottom-[45%] left-[20%] w-[60%] h-px bg-emerald-400/10" />
+            <div className="absolute bottom-[60%] left-[25%] w-[50%] h-px bg-emerald-400/8" />
+            <div className="absolute bottom-[75%] left-[30%] w-[40%] h-px bg-emerald-400/6" />
+            <div className="absolute bottom-[90%] left-[38%] w-[24%] h-px bg-emerald-400/5" />
             {/* Vertical columns */}
-            <div className="absolute bottom-0 left-[10%] w-px h-[85%] bg-gradient-to-t from-yellow-400/12 to-transparent" />
-            <div className="absolute bottom-0 left-[30%] w-px h-[75%] bg-gradient-to-t from-yellow-400/10 to-transparent" />
-            <div className="absolute bottom-0 left-[50%] w-px h-[95%] bg-gradient-to-t from-yellow-400/15 to-transparent" />
-            <div className="absolute bottom-0 left-[70%] w-px h-[75%] bg-gradient-to-t from-yellow-400/10 to-transparent" />
-            <div className="absolute bottom-0 left-[90%] w-px h-[85%] bg-gradient-to-t from-yellow-400/12 to-transparent" />
+            <div className="absolute bottom-0 left-[10%] w-px h-[85%] bg-gradient-to-t from-emerald-400/12 to-transparent" />
+            <div className="absolute bottom-0 left-[30%] w-px h-[75%] bg-gradient-to-t from-emerald-400/10 to-transparent" />
+            <div className="absolute bottom-0 left-[50%] w-px h-[95%] bg-gradient-to-t from-emerald-400/15 to-transparent" />
+            <div className="absolute bottom-0 left-[70%] w-px h-[75%] bg-gradient-to-t from-emerald-400/10 to-transparent" />
+            <div className="absolute bottom-0 left-[90%] w-px h-[85%] bg-gradient-to-t from-emerald-400/12 to-transparent" />
             {/* Pinnacle glow */}
-            <div className="absolute top-[5%] left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-yellow-300/40 animate-pulse shadow-[0_0_15px_rgba(234,179,8,0.3)]" />
+            <div className="absolute top-[5%] left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-emerald-300/40 animate-pulse shadow-[0_0_15px_rgba(16,185,129,0.3)]" />
           </div>
         </div>
 
@@ -302,13 +302,13 @@ export function DevelopContent() {
           }`}
           style={SIDEBAR_PAD}
         >
-          <p className="text-yellow-400/40 text-[10px] font-bold tracking-[0.3em] uppercase mb-6">
+          <p className="text-emerald-400/40 text-[10px] font-bold tracking-[0.3em] uppercase mb-6">
             Construction begins
           </p>
           <h2 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight">
             The Tower
             <br />
-            <span className="text-yellow-300/50">rises.</span>
+            <span className="text-emerald-300/50">rises.</span>
           </h2>
           <p className="mt-6 text-white/25 text-sm max-w-sm mx-auto leading-relaxed">
             Where designs become living systems. Every line of code laid with intent. Every component engineered to perform.
@@ -321,7 +321,7 @@ export function DevelopContent() {
         data-section="shape"
         className="relative w-full min-h-screen flex items-center overflow-hidden py-32"
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-[#050505] via-[#0a0800] to-[#050505]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#050505] via-[#0a120d] to-[#050505]" />
 
         <div
           ref={shapeRef}
@@ -331,7 +331,7 @@ export function DevelopContent() {
           style={SIDEBAR_PAD}
         >
           <div className="mb-16 text-center">
-            <p className="text-yellow-400/40 text-[10px] font-bold tracking-[0.3em] uppercase mb-4">
+            <p className="text-emerald-400/40 text-[10px] font-bold tracking-[0.3em] uppercase mb-4">
               The architecture
             </p>
             <h2 className="font-display text-4xl md:text-6xl font-bold text-white">
@@ -346,12 +346,12 @@ export function DevelopContent() {
           <div className="max-w-5xl mx-auto">
             <div className="relative">
               <svg className="absolute inset-0 w-full h-full opacity-15 pointer-events-none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-                <line x1="20%" y1="25%" x2="50%" y2="20%" stroke="#eab308" strokeWidth="0.5" />
-                <line x1="50%" y1="20%" x2="80%" y2="25%" stroke="#eab308" strokeWidth="0.5" />
-                <line x1="30%" y1="75%" x2="70%" y2="75%" stroke="#eab308" strokeWidth="0.5" />
-                <line x1="20%" y1="25%" x2="30%" y2="75%" stroke="#eab308" strokeWidth="0.5" />
-                <line x1="80%" y1="25%" x2="70%" y2="75%" stroke="#eab308" strokeWidth="0.5" />
-                <line x1="50%" y1="20%" x2="50%" y2="50%" stroke="#eab308" strokeWidth="0.5" />
+                <line x1="20%" y1="25%" x2="50%" y2="20%" stroke="#10b981" strokeWidth="0.5" />
+                <line x1="50%" y1="20%" x2="80%" y2="25%" stroke="#10b981" strokeWidth="0.5" />
+                <line x1="30%" y1="75%" x2="70%" y2="75%" stroke="#10b981" strokeWidth="0.5" />
+                <line x1="20%" y1="25%" x2="30%" y2="75%" stroke="#10b981" strokeWidth="0.5" />
+                <line x1="80%" y1="25%" x2="70%" y2="75%" stroke="#10b981" strokeWidth="0.5" />
+                <line x1="50%" y1="20%" x2="50%" y2="50%" stroke="#10b981" strokeWidth="0.5" />
               </svg>
 
               <div className="grid grid-cols-3 gap-y-16 gap-x-8 md:gap-x-16 py-8">
@@ -359,13 +359,13 @@ export function DevelopContent() {
                   const Icon = d.icon;
                   return (
                     <div key={d.realTitle} className="flex flex-col items-center text-center group">
-                      <div className="w-20 h-20 md:w-24 md:h-24 rounded-sm bg-yellow-500/8 border border-yellow-500/15 flex items-center justify-center mb-5 group-hover:bg-yellow-500/15 group-hover:border-yellow-500/30 transition-all duration-500">
-                        <Icon className="w-8 h-8 md:w-10 md:h-10 text-yellow-400/70 group-hover:text-yellow-400 transition-colors" />
+                      <div className="w-20 h-20 md:w-24 md:h-24 rounded-sm bg-emerald-500/8 border border-emerald-500/15 flex items-center justify-center mb-5 group-hover:bg-emerald-500/15 group-hover:border-emerald-500/30 transition-all duration-500">
+                        <Icon className="w-8 h-8 md:w-10 md:h-10 text-emerald-400/70 group-hover:text-emerald-400 transition-colors" />
                       </div>
                       <h3 className="font-display text-base md:text-lg font-semibold text-white/80 mb-1">
                         {d.loreTitle}
                       </h3>
-                      <span className="text-[10px] text-yellow-400/40 font-mono">
+                      <span className="text-[10px] text-emerald-400/40 font-mono">
                         {'// '}{d.realTitle}
                       </span>
                     </div>
@@ -377,13 +377,13 @@ export function DevelopContent() {
                     const Icon = d.icon;
                     return (
                       <div key={d.realTitle} className="flex flex-col items-center text-center group">
-                        <div className="w-20 h-20 md:w-24 md:h-24 rounded-sm bg-yellow-500/8 border border-yellow-500/15 flex items-center justify-center mb-5 group-hover:bg-yellow-500/15 group-hover:border-yellow-500/30 transition-all duration-500">
-                          <Icon className="w-8 h-8 md:w-10 md:h-10 text-yellow-400/70 group-hover:text-yellow-400 transition-colors" />
+                        <div className="w-20 h-20 md:w-24 md:h-24 rounded-sm bg-emerald-500/8 border border-emerald-500/15 flex items-center justify-center mb-5 group-hover:bg-emerald-500/15 group-hover:border-emerald-500/30 transition-all duration-500">
+                          <Icon className="w-8 h-8 md:w-10 md:h-10 text-emerald-400/70 group-hover:text-emerald-400 transition-colors" />
                         </div>
                         <h3 className="font-display text-base md:text-lg font-semibold text-white/80 mb-1">
                           {d.loreTitle}
                         </h3>
-                        <span className="text-[10px] text-yellow-400/40 font-mono">
+                        <span className="text-[10px] text-emerald-400/40 font-mono">
                           {'// '}{d.realTitle}
                         </span>
                       </div>
@@ -402,7 +402,7 @@ export function DevelopContent() {
         className="relative w-full min-h-screen flex items-center overflow-hidden py-32"
       >
         <div className="absolute inset-0 bg-[#050505]" />
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-500/20 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-500/20 to-transparent" />
 
         <div
           ref={artifactsRef}
@@ -412,7 +412,7 @@ export function DevelopContent() {
           style={SIDEBAR_PAD}
         >
           <div className="text-center mb-16">
-            <p className="text-yellow-400/40 text-[10px] font-bold tracking-[0.3em] uppercase mb-4">
+            <p className="text-emerald-400/40 text-[10px] font-bold tracking-[0.3em] uppercase mb-4">
               Built and launched
             </p>
             <h2 className="font-display text-4xl md:text-6xl font-bold text-white">
@@ -429,18 +429,18 @@ export function DevelopContent() {
               const Icon = artifact.icon;
               return (
                 <div key={artifact.realTitle} className="group">
-                  <div className="relative overflow-hidden rounded-sm border border-yellow-500/10 group-hover:border-yellow-500/25 transition-colors duration-500">
-                    <div className="aspect-[3/4] w-full bg-gradient-to-br from-yellow-950/40 via-[#0a0800] to-amber-950/25 relative overflow-hidden">
+                  <div className="relative overflow-hidden rounded-sm border border-emerald-500/10 group-hover:border-emerald-500/25 transition-colors duration-500">
+                    <div className="aspect-[3/4] w-full bg-gradient-to-br from-emerald-950/40 via-[#0a120d] to-green-950/25 relative overflow-hidden">
                       <div className="absolute inset-0 flex items-center justify-center">
                         <div className="relative">
-                          <div className="w-16 h-16 rounded-sm bg-yellow-500/8 flex items-center justify-center">
-                            <Icon className="w-8 h-8 text-yellow-400/30 group-hover:text-yellow-400/50 transition-colors duration-500" />
+                          <div className="w-16 h-16 rounded-sm bg-emerald-500/8 flex items-center justify-center">
+                            <Icon className="w-8 h-8 text-emerald-400/30 group-hover:text-emerald-400/50 transition-colors duration-500" />
                           </div>
-                          <div className="absolute inset-0 rounded-sm bg-yellow-500/5 blur-xl scale-150" />
+                          <div className="absolute inset-0 rounded-sm bg-emerald-500/5 blur-xl scale-150" />
                         </div>
                       </div>
                       <div className="absolute inset-0 opacity-[0.03]" style={{
-                        backgroundImage: 'linear-gradient(rgba(234,179,8,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(234,179,8,0.3) 1px, transparent 1px)',
+                        backgroundImage: 'linear-gradient(rgba(16,185,129,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(16,185,129,0.3) 1px, transparent 1px)',
                         backgroundSize: '30px 30px',
                       }} />
                       <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-[#050505] to-transparent" />
@@ -449,7 +449,7 @@ export function DevelopContent() {
                       <h3 className="font-display text-sm font-bold text-white mb-1">
                         {artifact.loreTitle}
                       </h3>
-                      <p className="text-[9px] text-yellow-400/50 font-mono uppercase tracking-wider">
+                      <p className="text-[9px] text-emerald-400/50 font-mono uppercase tracking-wider">
                         {artifact.realTitle}
                       </p>
                     </div>
@@ -466,9 +466,9 @@ export function DevelopContent() {
         data-section="companion"
         className="relative w-full h-screen min-h-[700px] flex items-center justify-center overflow-hidden"
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-[#050505] via-[#0a0800] to-[#050505]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#050505] via-[#0a120d] to-[#050505]" />
         <div className="absolute inset-0 opacity-[0.03]" style={{
-          backgroundImage: `repeating-linear-gradient(90deg, #eab308 0px, transparent 1px, transparent 40px)`,
+          backgroundImage: `repeating-linear-gradient(90deg, #10b981 0px, transparent 1px, transparent 40px)`,
         }} />
 
         <div
@@ -478,36 +478,36 @@ export function DevelopContent() {
           }`}
           style={SIDEBAR_PAD}
         >
-          <p className="text-yellow-400/30 text-[10px] font-bold tracking-[0.3em] uppercase mb-8">
+          <p className="text-emerald-400/30 text-[10px] font-bold tracking-[0.3em] uppercase mb-8">
             Your tower guardian
           </p>
 
           {/* Axiom familiar visual — angular/architectural */}
           <div className="relative w-[200px] h-[200px] md:w-[280px] md:h-[280px] mb-10">
-            <div className="absolute inset-0 rounded-sm border border-yellow-500/15 animate-[spin_30s_linear_infinite]" />
-            <div className="absolute inset-4 rounded-sm border border-yellow-500/20 animate-[spin_22s_linear_infinite_reverse]" />
-            <div className="absolute inset-8 rounded-sm border border-yellow-500/10" />
-            <div className="absolute inset-12 rounded-full bg-yellow-500/8 flex items-center justify-center">
-              <Code2 className="w-16 h-16 md:w-20 md:h-20 text-yellow-400/60" />
+            <div className="absolute inset-0 rounded-sm border border-emerald-500/15 animate-[spin_30s_linear_infinite]" />
+            <div className="absolute inset-4 rounded-sm border border-emerald-500/20 animate-[spin_22s_linear_infinite_reverse]" />
+            <div className="absolute inset-8 rounded-sm border border-emerald-500/10" />
+            <div className="absolute inset-12 rounded-full bg-emerald-500/8 flex items-center justify-center">
+              <Code2 className="w-16 h-16 md:w-20 md:h-20 text-emerald-400/60" />
             </div>
-            <div className="absolute inset-12 rounded-full bg-yellow-400/10 animate-ping" />
+            <div className="absolute inset-12 rounded-full bg-emerald-400/10 animate-ping" />
             {/* Data nodes */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-yellow-300/50 shadow-[0_0_8px_rgba(234,179,8,0.4)]" />
-            <div className="absolute bottom-[8%] right-[8%] w-1.5 h-1.5 rounded-full bg-amber-400/40" />
-            <div className="absolute top-[30%] left-[5%] w-1 h-1 rounded-full bg-yellow-300/30" />
-            <div className="absolute -inset-8 rounded-full bg-yellow-500/4 blur-2xl" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-emerald-300/50 shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
+            <div className="absolute bottom-[8%] right-[8%] w-1.5 h-1.5 rounded-full bg-green-400/40" />
+            <div className="absolute top-[30%] left-[5%] w-1 h-1 rounded-full bg-emerald-300/30" />
+            <div className="absolute -inset-8 rounded-full bg-emerald-500/4 blur-2xl" />
           </div>
 
           <h2 className="font-display text-4xl md:text-5xl font-bold text-white text-center mb-2">
             Meet Axiom.
           </h2>
-          <p className="text-yellow-300/30 text-sm max-w-sm text-center mb-6">
+          <p className="text-emerald-300/30 text-sm max-w-sm text-center mb-6">
             Your AI familiar. Axiom writes tests, catches bugs before they ship, and optimizes performance — a tireless guardian watching every build.
           </p>
 
           <div className="flex flex-wrap justify-center gap-2 mt-2">
             {['Automated Testing', 'Bug Detection', 'Performance Tuning', 'Code Review', 'CI/CD Ops'].map((cap) => (
-              <span key={cap} className="text-[10px] text-yellow-300/50 border border-yellow-500/15 rounded-full px-3 py-1.5 bg-yellow-500/5">
+              <span key={cap} className="text-[10px] text-emerald-300/50 border border-emerald-500/15 rounded-full px-3 py-1.5 bg-emerald-500/5">
                 {cap}
               </span>
             ))}
@@ -520,8 +520,8 @@ export function DevelopContent() {
         data-section="cta"
         className="relative w-full min-h-[70vh] flex items-center justify-center overflow-hidden py-32"
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-[#050505] via-[#12100a] to-[#050505]" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-yellow-500/5 blur-[120px]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#050505] via-[#0d1a12] to-[#050505]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-emerald-500/5 blur-[120px]" />
 
         <div
           ref={ctaRef}
@@ -531,10 +531,10 @@ export function DevelopContent() {
           style={SIDEBAR_PAD}
         >
           <div className="relative w-16 h-16 mx-auto mb-8">
-            <div className="absolute inset-0 rounded-sm border border-yellow-400/30" />
-            <div className="absolute inset-2 rounded-sm border border-yellow-400/20" />
+            <div className="absolute inset-0 rounded-sm border border-emerald-400/30" />
+            <div className="absolute inset-2 rounded-sm border border-emerald-400/20" />
             <div className="absolute inset-0 flex items-center justify-center">
-              <Building2 className="w-8 h-8 text-yellow-400" />
+              <Building2 className="w-8 h-8 text-emerald-400" />
             </div>
           </div>
           <h2 className="font-display text-4xl md:text-6xl font-bold text-white mb-4">
@@ -547,14 +547,14 @@ export function DevelopContent() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="/contact"
-              className="inline-flex items-center gap-3 rounded-full bg-yellow-600 hover:bg-yellow-500 px-10 py-4 text-lg font-bold text-white transition-all hover:scale-105 group"
+              className="inline-flex items-center gap-3 rounded-full bg-emerald-600 hover:bg-emerald-500 px-10 py-4 text-lg font-bold text-white transition-all hover:scale-105 group"
             >
               Ascend the Tower
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link
               href="/dream"
-              className="inline-flex items-center gap-2 rounded-full border border-yellow-500/30 hover:border-yellow-500/60 px-8 py-4 text-sm font-semibold text-yellow-300/80 hover:text-yellow-300 transition-all"
+              className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 hover:border-emerald-500/60 px-8 py-4 text-sm font-semibold text-emerald-300/80 hover:text-emerald-300 transition-all"
             >
               Back to the Dream
               <Compass className="w-4 h-4" />
@@ -569,7 +569,7 @@ export function DevelopContent() {
         className="relative w-full overflow-hidden py-24"
       >
         <div className="absolute inset-0 bg-[#050505]" />
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-500/20 to-transparent" />
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-500/20 to-transparent" />
 
         <div className="relative z-10" style={SIDEBAR_PAD}>
           <h2 className="font-display text-xl font-semibold mb-3 text-center text-foreground/40">

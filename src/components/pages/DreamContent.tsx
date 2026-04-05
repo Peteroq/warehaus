@@ -118,8 +118,8 @@ export function DreamContent() {
             </span>
           </div>
 
-          <h1 className="font-display text-7xl md:text-9xl lg:text-[12rem] font-black italic tracking-tighter text-white/90 leading-[0.85] mb-8">
-            DREAM.
+          <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-black italic tracking-tighter text-white/90 leading-[0.9] mb-8">
+            Build your Dream
           </h1>
 
           <p className="text-lg md:text-xl text-white/40 max-w-lg mx-auto leading-relaxed">
@@ -130,7 +130,7 @@ export function DreamContent() {
         </div>
 
         {/* Scroll indicator */}
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-10">
+        <div className="absolute bottom-28 left-1/2 -translate-x-1/2 z-10">
           <button
             onClick={() => document.querySelector('[data-section="fog"]')?.scrollIntoView({ behavior: 'smooth' })}
             className="flex flex-col items-center gap-2 text-indigo-300/40 hover:text-indigo-300/80 transition-colors"

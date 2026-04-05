@@ -2,7 +2,7 @@
 
 import { useRef, useEffect, useState, useCallback } from 'react';
 import { useLayout, type ActiveTab } from '@/components/providers/LayoutProvider';
-import { Menu, MessageCircle, ChevronDown } from 'lucide-react';
+import { Menu, X, MessageCircle, ChevronDown } from 'lucide-react';
 
 const TABS: { label: string; value: ActiveTab }[] = [
   { label: 'DREAM', value: 'dream' },
@@ -11,9 +11,9 @@ const TABS: { label: string; value: ActiveTab }[] = [
 ];
 
 const TAB_COLORS: Record<ActiveTab, string> = {
-  dream: 'text-purple-500',
-  design: 'text-pink-500',
-  develop: 'text-emerald-500',
+  dream: 'text-dream',
+  design: 'text-design',
+  develop: 'text-develop',
 };
 
 export function BottomNav() {
@@ -21,19 +21,21 @@ export function BottomNav() {
   const navRef = useRef<HTMLElement>(null);
   const tabRefs = useRef<Map<ActiveTab, HTMLButtonElement>>(new Map());
   const containerRef = useRef<HTMLDivElement>(null);
+  const rowRef = useRef<HTMLDivElement>(null);
   const [pill, setPill] = useState<{ left: number; width: number } | null>(null);
   const [indicators, setIndicators] = useState<Map<ActiveTab, { center: number }>>(new Map());
 
   const updatePositions = useCallback(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || !rowRef.current) return;
     const containerRect = containerRef.current.getBoundingClientRect();
+    const rowRect = rowRef.current.getBoundingClientRect();
 
-    // Update pill
+    // Update pill position relative to the row
     const el = tabRefs.current.get(activeTab);
     if (el) {
       const tabRect = el.getBoundingClientRect();
       setPill({
-        left: tabRect.left - containerRect.left,
+        left: tabRect.left - rowRect.left,
         width: tabRect.width,
       });
     }
@@ -68,7 +70,9 @@ export function BottomNav() {
   return (
     <nav
       ref={navRef}
-      className="fixed left-1/2 -translate-x-1/2 z-50 flex items-center justify-center gap-2 px-4 pt-3 bg-transparent"
+      className={`fixed left-1/2 -translate-x-1/2 z-50 flex items-center justify-center gap-2 px-4 pt-3 bg-transparent transition-transform duration-300 ${
+        chatOverlayOpen ? 'max-md:translate-y-[calc(100%+2rem)]' : ''
+      }`}
       style={{ bottom: '1.75rem' }}
     >
       {/* Menu button */}
@@ -77,9 +81,28 @@ export function BottomNav() {
         onClick={toggleMenu}
         aria-label={menuOpen ? 'Close menu' : 'Open menu'}
         aria-expanded={menuOpen}
-        className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/70 backdrop-blur-2xl border border-white/20 text-black/60 hover:text-black hover:bg-white/80 transition-colors"
+        className="flex h-11 w-11 items-center justify-center rounded-2xl backdrop-blur-2xl transition-colors"
+        style={{ background: 'var(--nav-bg)', borderColor: 'var(--nav-border)', borderWidth: '1px', color: 'var(--nav-text)' }}
       >
-        <Menu className="w-5 h-5" />
+        {/* Animated hamburger ↔ close icon (crossfade + rotate) */}
+        <span className="relative block h-5 w-5" aria-hidden="true">
+          <Menu
+            className="absolute inset-0 w-5 h-5"
+            style={{
+              opacity: menuOpen ? 0 : 1,
+              transform: menuOpen ? 'rotate(90deg)' : 'rotate(0deg)',
+              transition: 'opacity 200ms ease, transform 250ms cubic-bezier(0.4, 0, 0.2, 1)',
+            }}
+          />
+          <X
+            className="absolute inset-0 w-5 h-5"
+            style={{
+              opacity: menuOpen ? 1 : 0,
+              transform: menuOpen ? 'rotate(0deg)' : 'rotate(-90deg)',
+              transition: 'opacity 200ms ease, transform 250ms cubic-bezier(0.4, 0, 0.2, 1)',
+            }}
+          />
+        </span>
       </button>
 
       {/* Tab slider */}
@@ -87,13 +110,14 @@ export function BottomNav() {
         ref={containerRef}
         role="tablist"
         aria-label="Content tabs"
-        className="relative flex flex-col items-center gap-0.5 rounded-2xl bg-white/70 backdrop-blur-2xl border border-white/20 p-1"
+        className="relative flex flex-col items-center rounded-2xl backdrop-blur-2xl p-[3px] md:min-w-[320px]"
+        style={{ background: 'var(--nav-bg)', borderColor: 'var(--nav-border)', borderWidth: '1px' }}
       >
         {/* Floating indicators above tabs — positioned per tab */}
         {TABS.map(({ value }) => {
           const isActive = activeTab === value;
           const pos = indicators.get(value);
-          const w = isActive ? 48 : 24;
+          const w = isActive ? 56 : 12;
           return (
             <div
               key={`indicator-${value}`}
@@ -105,21 +129,28 @@ export function BottomNav() {
               }}
             >
               <div
-                className={`h-[5px] w-full rounded-full ${
-                  isActive ? 'bg-white/90' : 'bg-white/30'
-                }`}
+                className="h-[5px] w-full rounded-full"
+                style={{ background: isActive ? 'var(--nav-text-active)' : 'var(--nav-text-muted)' }}
               />
             </div>
           );
         })}
 
         {/* Tab buttons row */}
-        <div className="flex items-center gap-0.5">
-          {/* Sliding pill */}
+        <div ref={rowRef} className="relative flex items-stretch w-full">
+          {/* Sliding pill background */}
           {pill && (
             <div
-              className="absolute top-1 h-[calc(100%-8px)] rounded-xl bg-white/60 border border-white/40 pointer-events-none transition-all duration-400 ease-[cubic-bezier(0.4,0,0.2,1)]"
-              style={{ left: `${pill.left}px`, width: `${pill.width}px` }}
+              className="absolute top-0 bottom-0 rounded-xl pointer-events-none"
+              data-pill
+              style={{
+                left: `${pill.left}px`,
+                width: `${pill.width}px`,
+                background: 'var(--nav-pill-bg)',
+                borderColor: 'var(--nav-pill-border)',
+                borderWidth: '1px',
+                transition: 'left 300ms cubic-bezier(0.4, 0, 0.2, 1), width 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+              }}
             />
           )}
 
@@ -133,9 +164,8 @@ export function BottomNav() {
                 aria-selected={isActive}
                 aria-controls={`tabpanel-${value}`}
                 onClick={() => setActiveTab(value)}
-                className={`relative z-10 w-20 text-center py-2 text-xs font-bold tracking-wider rounded-xl transition-colors duration-300 ${
-                  isActive ? 'text-black' : 'text-black/40 hover:text-black/60'
-                }`}
+                className="relative z-10 flex-1 min-w-[80px] md:min-w-[100px] text-center py-3 text-xs font-bold tracking-widest rounded-xl transition-colors duration-300 font-display"
+                style={{ color: isActive ? 'var(--nav-text-active)' : 'var(--nav-text-muted)' }}
               >
                 {label}
               </button>
@@ -149,7 +179,8 @@ export function BottomNav() {
         type="button"
         onClick={toggleChatOverlay}
         aria-label={chatOverlayOpen ? 'Close chat' : 'Open chat'}
-        className={`flex h-11 w-11 items-center justify-center rounded-2xl bg-white/70 backdrop-blur-2xl border border-white/20 hover:bg-white/80 transition-colors ${TAB_COLORS[activeTab]}`}
+        className={`flex h-11 w-11 items-center justify-center rounded-2xl backdrop-blur-2xl transition-colors ${TAB_COLORS[activeTab]}`}
+        style={{ background: 'var(--nav-bg)', borderColor: 'var(--nav-border)', borderWidth: '1px' }}
       >
         {chatOverlayOpen ? (
           <ChevronDown className="w-5 h-5" />

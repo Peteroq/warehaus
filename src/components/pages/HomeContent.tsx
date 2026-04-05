@@ -6,6 +6,7 @@ import { useScrollObserver } from '@/hooks/useScrollObserver';
 import { DreamContent } from '@/components/pages/DreamContent';
 import { DesignContent } from '@/components/pages/DesignContent';
 import { DevelopContent } from '@/components/pages/DevelopContent';
+import { LoadingScreen } from '@/components/layout/LoadingScreen';
 
 const TABS: ActiveTab[] = ['dream', 'design', 'develop'];
 const TAB_INDEX: Record<ActiveTab, number> = { dream: 0, design: 1, develop: 2 };
@@ -110,6 +111,7 @@ export function HomeContent() {
 
   return (
     <div className="w-full h-[100dvh] overflow-hidden">
+      <LoadingScreen />
       <div
         ref={scrollRef}
         className="flex h-full overflow-x-auto snap-x snap-mandatory scrollbar-none overscroll-x-contain"
