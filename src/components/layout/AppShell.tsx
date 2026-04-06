@@ -108,7 +108,7 @@ function AppShellInner({ children }: { children: ReactNode }) {
 
   return (
     <div
-      className="min-h-screen w-full bg-black text-white font-sans selection:bg-white/20"
+      className="min-h-screen w-full bg-background text-foreground font-sans selection:bg-foreground/20 transition-colors duration-500"
       style={
         {
           '--left-sidebar-w': '0px',
@@ -117,7 +117,7 @@ function AppShellInner({ children }: { children: ReactNode }) {
       }
     >
       {/* Main content — bottom padding for BottomNav */}
-      <main ref={mainRef} className="w-full pb-16">
+      <main ref={mainRef} className="w-full pb-28">
         <PageTransition>{children}</PageTransition>
       </main>
 

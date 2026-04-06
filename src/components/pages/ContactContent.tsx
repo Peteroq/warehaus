@@ -24,7 +24,7 @@ const inquiryTypes = [
     label: 'Dream',
     subtitle: 'Strategy & Vision',
     description: 'Brand strategy, market research, creative direction, product visioning, content strategy.',
-    color: '#6366f1',
+    color: 'var(--dream-primary)',
     href: '/dream',
   },
   {
@@ -32,7 +32,7 @@ const inquiryTypes = [
     label: 'Design',
     subtitle: 'Craft & Form',
     description: 'UI/UX design, brand identity, design systems, prototyping, visual design.',
-    color: '#f97316',
+    color: 'var(--design-primary)',
     href: '/design',
   },
   {
@@ -40,7 +40,7 @@ const inquiryTypes = [
     label: 'Develop',
     subtitle: 'Engineering & Build',
     description: 'Web development, mobile apps, e-commerce, AI automation, API integrations.',
-    color: '#eab308',
+    color: 'var(--develop-primary)',
     href: '/develop',
   },
 ];

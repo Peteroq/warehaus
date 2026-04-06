@@ -1,13 +1,22 @@
 import type { Metadata } from 'next';
-import { Space_Grotesk, DM_Sans } from 'next/font/google';
+import localFont from 'next/font/local';
+import { DM_Sans } from 'next/font/google';
 import { VercelToolbar } from '@vercel/toolbar/next';
 import { AppShell } from '@/components/layout/AppShell';
 import { AgentationProvider } from '@/components/providers/AgentationProvider';
 import '@/styles/global.css';
 
-const spaceGrotesk = Space_Grotesk({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
+const eurostile = localFont({
+  src: [
+    { path: "../public/Font's/Eurostile.otf", weight: '400', style: 'normal' },
+    { path: "../public/Font's/Eurostile Regular Oblique.otf", weight: '400', style: 'italic' },
+    { path: "../public/Font's/Eurostile Medium.otf", weight: '500', style: 'normal' },
+    { path: "../public/Font's/Eurostile Medium Italic.otf", weight: '500', style: 'italic' },
+    { path: "../public/Font's/Eurostile Bold.otf", weight: '700', style: 'normal' },
+    { path: "../public/Font's/Eurostile Bold Oblique.otf", weight: '700', style: 'italic' },
+    { path: "../public/Font's/Eurostile Black.otf", weight: '900', style: 'normal' },
+    { path: "../public/Font's/Eurostile Black Italic.otf", weight: '900', style: 'italic' },
+  ],
   variable: '--font-display',
   display: 'swap',
 });
@@ -28,9 +37,35 @@ export const metadata: Metadata = {
   ],
 };
 
+// Blocking inline script that resolves the theme BEFORE first paint.
+// Reads the persisted mode (auto | light | dark) from localStorage, resolves
+// `auto` against `prefers-color-scheme`, and adds the `.light` class to
+// <html> when appropriate. Mirrors the logic in LayoutProvider so the two
+// stay in sync and there's no flash during hydration / on the loading screen.
+const themeInitScript = `
+(function() {
+  try {
+    var saved = localStorage.getItem('warehaus-theme');
+    var mode = (saved === 'light' || saved === 'dark' || saved === 'auto') ? saved : 'auto';
+    var resolved = mode;
+    if (mode === 'auto') {
+      resolved = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+    }
+    if (resolved === 'light') {
+      document.documentElement.classList.add('light');
+    } else {
+      document.documentElement.classList.remove('light');
+    }
+  } catch (e) {}
+})();
+`.trim();
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${spaceGrotesk.variable} ${dmSans.variable}`}>
+    <html lang="en" className={`${eurostile.variable} ${dmSans.variable}`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body className="bg-background text-foreground font-body antialiased" suppressHydrationWarning>
         <AppShell>{children}</AppShell>
         <AgentationProvider />

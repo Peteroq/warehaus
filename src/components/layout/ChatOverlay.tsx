@@ -1,9 +1,11 @@
 'use client';
 
 import { useEffect, useMemo, useRef } from 'react';
+import { X } from 'lucide-react';
 import { useLayout, type ActiveTab } from '@/components/providers/LayoutProvider';
 import { ChatMessages } from '@/components/react/chat/ChatMessages';
 import { ChatInput } from '@/components/react/chat/ChatInput';
+import { ProjectScope } from '@/components/react/chat/ProjectScope';
 import { useChatApi } from '@/components/react/chat/useChatApi';
 import type { ChatMessage } from '@/lib/chat/types';
 
@@ -86,18 +88,45 @@ export function ChatOverlay() {
       role="dialog"
       aria-label="Warehaus AI Chat"
       aria-modal="true"
-      className={`fixed inset-0 z-40 flex flex-col transition-all duration-300 ${
-        chatOverlayOpen
-          ? 'opacity-100'
-          : 'opacity-0 pointer-events-none'
+      className={`fixed inset-0 z-40 flex flex-col ${
+        chatOverlayOpen ? '' : 'pointer-events-none'
       }`}
-      style={{ bottom: 'calc(1.75rem + 56px)' }}
     >
-      {/* Blurred backdrop */}
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-3xl" />
+      {/* Blurred backdrop — blur animates in first */}
+      <div
+        className="absolute inset-0 transition-all duration-500 ease-out"
+        style={{
+          backgroundColor: chatOverlayOpen
+            ? 'color-mix(in oklab, var(--background) 55%, transparent)'
+            : 'transparent',
+          backdropFilter: chatOverlayOpen ? 'blur(64px)' : 'blur(0px)',
+          WebkitBackdropFilter: chatOverlayOpen ? 'blur(64px)' : 'blur(0px)',
+        }}
+      />
 
-      {/* Chat container */}
-      <div ref={chatContainerRef} className="relative z-10 flex flex-1 flex-col max-w-2xl w-full mx-auto">
+      {/* Mobile close button — fades in after backdrop */}
+      <button
+        type="button"
+        onClick={toggleChatOverlay}
+        aria-label="Close chat"
+        className={`md:hidden absolute top-4 left-4 z-20 flex h-9 w-9 items-center justify-center rounded-full transition-opacity duration-300 ${
+          chatOverlayOpen ? 'opacity-100 delay-200' : 'opacity-0'
+        }`}
+        style={{
+          background: 'color-mix(in oklab, var(--foreground) 10%, transparent)',
+          color: 'color-mix(in oklab, var(--foreground) 60%, transparent)',
+        }}
+      >
+        <X className="w-5 h-5" />
+      </button>
+
+      {/* Chat container — fades in after backdrop */}
+      <div
+        ref={chatContainerRef}
+        className={`relative z-10 flex flex-1 flex-col max-w-2xl w-full mx-auto transition-opacity duration-300 ${
+          chatOverlayOpen ? 'opacity-100 delay-200' : 'opacity-0'
+        }`}
+      >
         {/* Messages — intro thread + user messages */}
         <div className="flex flex-1 flex-col overflow-hidden">
           <ChatMessages messages={allMessages} />
@@ -111,8 +140,9 @@ export function ChatOverlay() {
         )}
 
         {/* Input pinned to bottom of chat area, above navbar */}
-        <div className="pb-3">
+        <div className="space-y-2 pb-6 md:pb-[calc(1.75rem+56px+2rem)]">
           <ChatInput onSend={sendMessage} disabled={isLoading} />
+          <ProjectScope />
         </div>
       </div>
     </div>

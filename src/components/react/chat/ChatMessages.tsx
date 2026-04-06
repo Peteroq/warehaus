@@ -5,9 +5,9 @@ import { cn } from '@/lib/utils/cn';
 import type { ChatMessage } from '@/lib/chat/types';
 
 const SENDER_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
-  dreamer: { label: 'Dreamer', color: 'text-purple-400', bg: 'bg-purple-500/15' },
-  designer: { label: 'Designer', color: 'text-pink-400', bg: 'bg-pink-500/15' },
-  developer: { label: 'Developer', color: 'text-emerald-400', bg: 'bg-emerald-500/15' },
+  dreamer: { label: 'Dreamer', color: 'text-dream', bg: 'bg-dream-surface' },
+  designer: { label: 'Designer', color: 'text-design', bg: 'bg-design-surface' },
+  developer: { label: 'Developer', color: 'text-develop', bg: 'bg-develop-surface' },
 };
 
 interface ChatMessagesProps {
@@ -33,7 +33,7 @@ export function ChatMessages({ messages }: ChatMessagesProps) {
   }
 
   return (
-    <div className="flex flex-1 flex-col gap-4 overflow-y-auto px-4 pt-8 pb-4">
+    <div className="flex flex-1 flex-col gap-4 overflow-y-auto px-4 pt-14 md:pt-8 pb-4">
       {messages.map((msg) => (
         <MessageBubble key={msg.id} message={msg} />
       ))}
@@ -72,10 +72,8 @@ function MessageBubble({ message }: { message: ChatMessage }) {
           className={cn(
             'rounded-xl px-3.5 py-2.5 text-sm leading-relaxed',
             isUser
-              ? 'bg-accent/15 text-foreground'
-              : sender
-                ? cn(sender.bg, 'text-foreground')
-                : 'bg-surface-elevated text-foreground'
+              ? 'bg-white/10 text-foreground'
+              : 'bg-white/5 text-foreground'
           )}
         >
           {message.content}

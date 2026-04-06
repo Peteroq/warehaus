@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useLayout } from '@/components/providers/LayoutProvider';
-import { Home, BookOpen, DoorOpen, Users } from 'lucide-react';
+import { Home, BookOpen, DoorOpen, Users, Sun, Moon, Monitor } from 'lucide-react';
 
 const MENU_ITEMS = [
   { icon: Home, label: 'Home', href: '/' },
@@ -14,9 +14,14 @@ const MENU_ITEMS = [
 ];
 
 export function MenuOverlay() {
-  const { menuOpen, toggleMenu } = useLayout();
+  const { menuOpen, toggleMenu, themeMode, setThemeMode } = useLayout();
   const pathname = usePathname();
   const panelRef = useRef<HTMLDivElement>(null);
+  // `themeMode` differs between server (always 'auto') and client (read from
+  // localStorage), so gate theme-dependent rendering until after hydration to
+  // avoid a mismatch.
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => setHydrated(true), []);
 
   // Close on route change
   useEffect(() => {
@@ -67,12 +72,12 @@ export function MenuOverlay() {
         ref={panelRef}
         role="dialog"
         aria-label="Navigation menu"
-        className={`fixed left-1/2 -translate-x-1/2 z-50 rounded-2xl bg-[#111]/95 backdrop-blur-2xl border border-white/[0.1] shadow-[0_0_40px_rgba(0,0,0,0.5)] p-2 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+        className={`fixed left-1/2 -translate-x-1/2 z-50 rounded-2xl backdrop-blur-2xl shadow-[0_0_40px_rgba(0,0,0,0.3)] p-2 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${
           menuOpen
             ? 'opacity-100 translate-y-0'
             : 'opacity-0 translate-y-4 pointer-events-none'
         }`}
-        style={{ bottom: 'calc(1.75rem + 56px + 12px)', width: 'fit-content', minWidth: 'var(--nav-width, auto)' }}
+        style={{ bottom: 'calc(1.75rem + 56px + 12px)', width: 'fit-content', minWidth: 'var(--nav-width, auto)', background: 'var(--nav-bg)', borderColor: 'var(--nav-border)', borderWidth: '1px' }}
       >
         <nav className="flex flex-col gap-0.5">
           {MENU_ITEMS.map(({ icon: Icon, label, href }) => {
@@ -81,17 +86,46 @@ export function MenuOverlay() {
               <Link
                 key={href}
                 href={href}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
-                  isActive
-                    ? 'bg-white/[0.1] text-white'
-                    : 'text-white/60 hover:text-white hover:bg-white/[0.06]'
-                }`}
+                className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors"
+                style={{
+                  color: isActive ? 'var(--nav-text-active)' : 'var(--nav-text)',
+                  background: isActive ? 'var(--nav-pill-bg)' : 'transparent',
+                }}
               >
                 <Icon className="w-4 h-4" />
                 <span>{label}</span>
               </Link>
             );
           })}
+
+          {/* Divider */}
+          <div className="h-px mx-2 my-1" style={{ background: 'var(--nav-pill-border)' }} />
+
+          {/* Theme switcher — dark / light / auto */}
+          <div className="flex items-center gap-1 mx-2 my-1 rounded-xl p-1" style={{ background: 'var(--nav-pill-bg)' }}>
+            {([
+              { mode: 'auto', label: 'Auto', Icon: Monitor },
+              { mode: 'light', label: 'Light', Icon: Sun },
+              { mode: 'dark', label: 'Dark', Icon: Moon },
+            ] as const).map(({ mode, label, Icon }) => {
+              const isActive = hydrated && themeMode === mode;
+              return (
+                <button
+                  key={mode}
+                  type="button"
+                  onClick={() => !isActive && setThemeMode(mode)}
+                  className="flex flex-1 items-center justify-center gap-1.5 px-2 py-2 rounded-lg text-xs font-medium transition-all duration-200"
+                  style={{
+                    background: isActive ? 'var(--nav-text-active)' : 'transparent',
+                    color: isActive ? 'var(--nav-text-inverse)' : 'var(--nav-text-muted)',
+                  }}
+                >
+                  <Icon className="w-3.5 h-3.5" />
+                  <span>{label}</span>
+                </button>
+              );
+            })}
+          </div>
         </nav>
       </div>
     </>
