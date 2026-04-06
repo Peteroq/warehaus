@@ -2,12 +2,19 @@
 
 import { useState, useCallback, useRef } from 'react';
 import type { ChatMessage, ChatState } from '@/lib/chat/types';
+import type { ActiveTab } from '@/components/providers/LayoutProvider';
+
+const TAB_TO_SENDER: Record<ActiveTab, ChatMessage['sender']> = {
+  dream: 'dreamer',
+  design: 'designer',
+  develop: 'developer',
+};
 
 function createId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
 }
 
-export function useChatApi() {
+export function useChatApi(activeTab?: ActiveTab) {
   const [state, setState] = useState<ChatState>({
     messages: [],
     isLoading: false,
@@ -53,6 +60,7 @@ export function useChatApi() {
         role: 'assistant',
         content: data.reply,
         timestamp: new Date(),
+        sender: activeTab ? TAB_TO_SENDER[activeTab] : undefined,
       };
 
       setState((prev) => ({
@@ -70,7 +78,7 @@ export function useChatApi() {
         error: errorMessage,
       }));
     }
-  }, []);
+  }, [activeTab]);
 
   return {
     messages: state.messages,

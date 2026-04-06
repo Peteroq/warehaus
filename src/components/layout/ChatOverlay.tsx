@@ -35,7 +35,7 @@ const GREETING: Record<ActiveTab, ChatMessage> = {
 
 export function ChatOverlay() {
   const { chatOverlayOpen, toggleChatOverlay, activeTab } = useLayout();
-  const { messages, isLoading, sendMessage, error } = useChatApi();
+  const { messages, isLoading, sendMessage, error } = useChatApi(activeTab);
 
   const allMessages = useMemo(
     () => [GREETING[activeTab], ...messages],
@@ -123,13 +123,13 @@ export function ChatOverlay() {
       {/* Chat container — fades in after backdrop */}
       <div
         ref={chatContainerRef}
-        className={`relative z-10 flex flex-1 flex-col max-w-2xl w-full mx-auto transition-opacity duration-300 ${
+        className={`relative z-10 flex flex-1 flex-col min-h-0 max-w-2xl w-full mx-auto transition-opacity duration-300 ${
           chatOverlayOpen ? 'opacity-100 delay-200' : 'opacity-0'
         }`}
       >
-        {/* Messages — intro thread + user messages */}
-        <div className="flex flex-1 flex-col overflow-hidden">
-          <ChatMessages messages={allMessages} />
+        {/* Messages — intro thread + user messages (min-h-0 lets flex child shrink & scroll) */}
+        <div className="flex flex-1 flex-col min-h-0">
+          <ChatMessages messages={allMessages} isLoading={isLoading} activeTab={activeTab} />
         </div>
 
         {/* Error banner */}

@@ -140,7 +140,7 @@ export function ChatPanel() {
 
         {/* Messages */}
         <div className="flex flex-1 flex-col overflow-hidden">
-          <ChatMessages messages={messages} />
+          <ChatMessages messages={messages} isLoading={isLoading} />
         </div>
 
         {/* Error banner */}

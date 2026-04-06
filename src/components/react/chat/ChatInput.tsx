@@ -50,7 +50,7 @@ export function ChatInput({ onSend, disabled = false }: ChatInputProps) {
           rows={1}
           placeholder="Type a message..."
           className={cn(
-            'flex-1 resize-none bg-transparent px-4 py-3 text-sm',
+            'flex-1 resize-none bg-transparent px-4 py-3 text-base md:text-sm',
             'placeholder:text-foreground/40 text-foreground',
             'focus:outline-none',
             'disabled:cursor-not-allowed disabled:opacity-50'
