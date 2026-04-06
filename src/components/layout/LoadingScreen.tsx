@@ -31,34 +31,27 @@ const MIN_DISPLAY_MS = 0;
 type Phase = 'loading' | 'exiting' | 'done';
 
 export function LoadingScreen() {
-  const [mounted, setMounted] = useState(false);
-  const [phase, setPhase] = useState<Phase>('loading');
+  // `mounted` is true only on the client so hydration renders nothing.
+  const [mounted] = useState(() => typeof window !== 'undefined');
+  const [phase, setPhase] = useState<Phase>(() => {
+    // Skip loader on subsequent mounts (SPA navigations) or when the page is
+    // already fully loaded (served from cache / bfcache).
+    if (typeof window === 'undefined') return 'loading';
+    if (hasShown) return 'done';
+    const navEntry = performance.getEntriesByType('navigation')[0] as
+      | PerformanceNavigationTiming
+      | undefined;
+    if (navEntry?.type === 'back_forward' || document.readyState === 'complete') return 'done';
+    return 'loading';
+  });
   const [progress, setProgress] = useState(0);
   const rafRef = useRef<number | null>(null);
   const timeoutsRef = useRef<number[]>([]);
 
-  // Decide on first mount whether to show at all.
+  // Mark as shown on first mount.
   useEffect(() => {
-    if (hasShown) {
-      setPhase('done');
-      return;
-    }
+    if (hasShown) return;
     hasShown = true;
-
-    // Skip the loader entirely when the page was served from cache — by the
-    // time this effect runs, `document.readyState === 'complete'` already
-    // means every subresource is in place, so there's nothing to wait for.
-    // Also skip on back/forward (bfcache) navigations.
-    const navEntry = performance.getEntriesByType('navigation')[0] as
-      | PerformanceNavigationTiming
-      | undefined;
-    const isBackForward = navEntry?.type === 'back_forward';
-    if (document.readyState === 'complete' || isBackForward) {
-      setPhase('done');
-      return;
-    }
-
-    setMounted(true);
   }, []);
 
   // Drive the progress animation + wait for real page load.
@@ -146,8 +139,9 @@ export function LoadingScreen() {
 
   // Cleanup any lingering timeouts on unmount.
   useEffect(() => {
+    const ref = timeoutsRef.current;
     return () => {
-      timeoutsRef.current.forEach((id) => window.clearTimeout(id));
+      ref.forEach((id) => window.clearTimeout(id));
     };
   }, []);
 

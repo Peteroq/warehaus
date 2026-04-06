@@ -77,7 +77,7 @@ export function LayoutProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (typeof window === 'undefined' || !window.matchMedia) return;
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
-    setSystemPrefersDark(mq.matches);
+    // Initial value already set via useState initializer; only subscribe to changes.
     const handler = (e: MediaQueryListEvent) => setSystemPrefersDark(e.matches);
     mq.addEventListener('change', handler);
     return () => mq.removeEventListener('change', handler);
